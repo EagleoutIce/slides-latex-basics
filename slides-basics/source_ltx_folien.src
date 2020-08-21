@@ -1,0 +1,1137 @@
+\makeatletter
+\def\input@path{{../sopra-collection/sopra-listings/}}
+\makeatother
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[main=ngerman,english]{babel}
+
+\def\getSopraPackage#1{\usepackage{../sopra-collection/#1/#1}}
+\getSopraPackage{sopra-listings} \getSopraPackage{sopra-tables}
+\usepackage{tikz,tikzducks,tikzsymbols,varwidth,booktabs,microtype,lmodern,multicol}
+
+\solLoadLanguage{bash,latex}
+
+\usetikzlibrary{%
+arrows,automata,calc,intersections,%
+through,decorations.pathreplacing,%
+decorations.pathmorphing,backgrounds,%
+positioning,fit,shapes,shadings,%
+shadows,matrix,scopes,patterns,mindmap,arrows.meta}
+
+% load the beamer-theme
+% \usetheme{lucy}
+\usepackage{../beamer-themes/lucy/beamerthemelucy}
+
+\usepackage{../helper-packages/eagle-beamer-latex}
+\usepackage{../helper-packages/eagle-util}
+\usepackage{../helper-packages/eagle-algorithms}
+
+\newcounter{TSKS}
+\hypersetup{colorlinks=false}
+
+\RestyleAlgo{plain}
+
+% Maybe make Latex?
+% yepp xD (980 LoC)
+\title[Latex - Online Tutorium 1]{LaTeX - in all seiner Schönheit \\\small Online Tutorium 1}
+\date{23.04.2020}
+\author{Florian Sihler}
+
+\def\gets{:=} % just here, please :D
+\def\abs#1{\left\lvert#1\right\rvert}
+
+\setcounter{tocdepth}{4} % subsubsections in toc
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section*{Die Themen heute}
+
+\begin{frame}[c]{Die heutigen Themen}
+    \begin{center}
+        \begin{columns}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[hideallsubsections,sections={1-4}]
+            \end{column}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[hideallsubsections,sections={5-7}]
+            \end{column}
+        \end{columns}
+    \end{center}
+\end{frame}
+
+\ltxpreview{Test}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    Hallo Welt
+\end{document}
+\end{tcboutputlisting}
+
+\section{Die Installation}
+\begin{frame}[fragile,t]{Die Basics - Die Installation}{}
+    \begin{itemize}[<+(1)->]
+        \item Keine Installation nötig, es existieren online Compiler wie \url{https://www.overleaf.com/}
+        \item Auf Linux reicht auf \T{apt}-basierten Systemen:
+\begin{bash*}
+sudo apt install texlive-full
+\end{bash*}
+            \pause{} Sonst: \url{https://www.tug.org/texlive/tlmgr.html}
+        \item Für Windoof wird \T{Mik\TeX} (\url{https://miktex.org/download}) in Kombination mit einer IDE wie TeXstudio (\url{https://www.texstudio.org/#download}) benötigt.
+        \item Für MacOS gibt es eine gute Anleitung: \url{https://www.latexbuch.de/latex-apple-mac-os-x-installieren/}. Für das iPad bestehen Apps wie TeXpad.
+    \end{itemize}
+\end{frame}
+
+\section{Die Basics}
+\subsection{Ein Dokument}
+\begin{frame}[fragile]{Die Basics - Hallo Welt}{}
+    {\eblLoadLtx{Test}{graphics options={trim=2cm 22cm 10cm 2cm, clip}}{before lower={\pause}}}
+    \begin{itemize}
+        \item Auf Linux kompilieren mittels: \pause\bbash{pdflatex :lan:filename:ran:.tex}\pause{} \info{Auch für Linux existieren Editoren wie Kile, die viel automatisieren.}
+        \item \pause{}In Windows/Overleaf: Speichern/klick auf das grüne Dreieck.
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Die Basics - Dokumentstruktur}{}
+    \begin{center}
+        \begin{tikzpicture}[desc/.style={font=\footnotesize\itshape\color{gray},align=left}]
+            \node[below right] at(0,0) {\tcbinputlisting{lstpresenterstyle,listing options={style=LSTADVANCED,language=lLatex},text width=0.65\linewidth}};
+            \onslide<+(1)->{\node[above,desc] (a) at(1.5,0.5) {Dokumentklasse, grundlegendes Layout des Dokuments};
+            \draw[-Kite] (a) -- ++(1,-1.25);}
+
+            \onslide<+(1)->{\node[right,desc] (b) at(6.5,-1.15) {Präambel. Hier werden Pakete\\ eingebunden und\\Befehle definiert.};
+            \draw[-Kite] (b) -- ++(-4.5,0);}
+
+            \onslide<+(1)->{\draw [decorate,decoration={brace,amplitude=6pt,raise=4pt},yshift=0pt] (4.5,-1.35) -- ++(0,-1.65) node [desc,midway,right,xshift=0.45cm] {Das eigentliche Dokument};}
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+\subsection{Pakete}
+\begin{frame}[fragile,t]{Die Basics - Ein Paket, was ist das?}{}
+    \begin{itemize}[<+(1)->]
+        \item (\LaTeX-)Code der von Anderen geschrieben wurde um eine Aufgabe zu bewältigen.
+        \item Werden in der Präambel eingebunden (vor \blatex{\\begin\{document\}}).
+        \item Grundlegend: \pause\blatex{\\usepackage\{:lan:Paketname:ran:\}}.
+        \item Beispiel: \blatex{\\usepackage\{amsmath\}}.\pause{} \info{Das Paket liefert einige nützliche Definitionen und Erweiterungen für mathematische Gleichungen.}
+        \item Manche fordern ein Argument, dann lautet die Signatur: \pause\blatex{\\usepackage[:lan:Argumente:ran:]\{:lan:Paketname:ran:\}}.
+        \item Beispiel: \blatex{\\usepackage[utf8]\{inputenc\}}.\pause{} \info{Setzt die (erwartete) Kodierung des Texts auf UTF-8.}
+        \item Was gut ist: für Dokumente in deutscher Sprache reichen in der Regel die immer gleichen Pakete.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{Pakete}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage[ngerman]{babel}
+
+\begin{document}
+    Hallo Welt
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[fragile,t]{Die Basics - Hallo Welt, jetzt mit Paketen}{}
+    {\eblLoadLtx{Pakete}{graphics options={trim=2cm 21cm 10cm 2cm, clip}}{before lower={\pause}}}
+    \pause Nichts anders?\pause{} Wir werden sehen :D
+\end{frame}
+
+\begin{frame}[t]{Die Basics - Wichtige Pakete}{}
+\begin{description}[<+(1)->]
+    \item[inputenc] Lädt die richtige Kodierung für LaTeX
+    \item[fontenc] Kodierung für die Schrift
+    \item[babel] Lädt Worttrennungen und Übersetzungen für die übergebene Sprache \info{\T{ngerman} entspricht \emph{new-german} also der neuen deutschen Rechtschreibung)}
+\end{description}\medskip
+\begin{itemize}[<+(1)->]
+    \item Diese Pakete können eigentlich immer unabhängig vom spezifischen Dokument eingebunden werden.\pause{} \info{Die Dokumentationen zu den Paketen erhält man bei einer installierten \T{texlive-Version} auf Linux/MacOS mittels: \bbash{texdoc :lan:Paketname:ran:}.\pause{} Sonst im Internet \say{\bbash{CTAN :lan:Paketname:ran:}} suchen.}
+    \item Weitere Pakete folgen \Smiley.
+\end{itemize}
+\end{frame}
+
+
+
+\section{Formatierungen}
+\begin{frame}[fragile]{}{}
+\begin{center}
+\begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+    \foreach \x/\hair in {1/longhair,3.5/crazyhair,6/mohican}{
+        \node at(\x,0){\tikz{\duck[parrot,\hair,jacket=cprimary!60!white]}};% stay compatible, some versions don't have x/y-shift
+    }
+    \node[below] at(3.5,-1.5) {\Large \textbf{Fo}r\raisebox{-2pt}{\itshape m}at\textsc{ie}\rotatebox{14}{r}$\overline{\text{un\rotatebox{-25}{g}}}$\color{cprimary}en};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile,t]{Formatierungen - Was ist ein Befehl?}{}
+    \begin{itemize}[<+(1)->]
+        \item Alle Befehle in \LaTeX{} beginnen mit einem Backslash. \pause{}\info{Das Prozentzeichen läutet den Start eines Zeilenkommentars sein. Analog zu \bjava{//} in Java.}
+        \item Ein Befehl kann für den Anfang als etwas \emph{magisches} gesehen werden, der zum Beispiel Formatierungsbefehle hinzufügt.
+        \item Die wichtigsten im Textfluss, \blatex{\\textbf} \pause{}\info{\textbf{text} \textbf{b}old\textbf{f}ace}, \blatex{\\textit} \pause{}\info{\textbf{text} \textbf{it}alic} und \blatex{\\texttt} \pause{}\info{\textbf{text} \textbf{t}ele\textbf{t}ype}:
+\begin{sclatex}[][]
+\textbf{Hallo Welt},
+\textit{Hallo Welt},
+\texttt{Hallo Welt}
+\end{sclatex}
+        \item Analog zu einer Methode/Funktion in Java, nehmen Befehle Argumente in geschwungenen Klammern entgegen.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Formatierungen - Ein kunterbunter Farbpalast}{}
+    \begin{itemize}[<+(1)->]
+        \item Durch das Paket \T{xcolor} betreten Farben das Schlachtfeld des Textsatzes.
+        \item Nun kann der Befehl \blatex{\\textcolor\{:lan:Farbe:ran:\}\{:lan:Text:ran:\}} verwendet werden um Text farbig zu machen:\pause{}
+\begin{sclatex}[][]
+\textcolor{orange}{Hallo Welt},
+\textcolor{teal}{Hallo Welt}
+\end{sclatex}
+        \item Ohne Argumente lädt \T{xcolor} die Farben:\pause{} \typesetList[previewColor]{black,darkgray,gray,lightgray,cyan,blue,teal,purple,violet,magenta,red,pink,yellow,orange,brown,olive,green,lime,white}.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]{Formatierungen - Von Para-Grafen und neuen Zeilen}{}
+    \begin{itemize}[<+(1)->]
+        \item Neue Zeile im \LaTeX-Code wird ignoriert. \pause{} Zwei oder mehrere Leerzeilen starten einen neuen Paragraphen.
+        \item Beliebig viele Leerfelder (größer Null \Laughey) kollabieren zu einem.
+        \item Expliziter Start einer neuen Zeile durch \blatex{\\\\} oder \blatex{\\newline}.
+        \item Expliziter Start eines neuen Paragraphen durch \blatex{\\par}.
+        \item Beispiel:\pause{}
+\begin{sclatex}[][righthand width=4.5cm]
+Hallo          Dieter
+Hallo Welt
+
+Grüß dich \newline
+Otto, Ich brauche \\ Beispiele
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+% \fi
+
+
+\section{Mathe}
+\begin{frame}[fragile]{}{}
+\begin{center}
+\begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+    \duck[squareglasses=blue!50!black,graduate=gray!20!black,tassel=red!70!black,signpost={\scalebox{0.4}{$e^{\text{\T{i}}\pi} = -1$}},jacket=cprimary!60!white]
+    \node[below] at(1,-0.5) {$\prod\forall\top\mathbb{H}\varepsilon$};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Die (Standard) Umgebungen}{}
+    \begin{itemize}[<+(1)->]
+        \item Mathe-Formeln können standardmäßig entweder \emph{inline} oder im \emph{displaystyle} gesetzt werden.\pause{} \info{Ersterer versucht die Zeilenhöhe nicht zu verletzen, kann also auch in Fließtext verwendet werden.\pause{} Der \emph{displaystyle} kann für wichtige Formeln oder längere Rechnungen verwendet werden}
+        \item In jeder Matheumgebung spielen Leerfelder keine Rolle, Abstände werden automatisch \say{hübsch} gesetzt.
+        \item \say{backslash Klammer-auf bis backslash Klammer-zu} schließt den \emph{inline}-Block ein:\pause
+\begin{sclatex}[][righthand width=4.5cm]
+Hallo 42+3=45,\\
+ist dies \(42 + 3 = 45\).
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+\begin{frame}[fragile,t]{Mathe - Die (Standard) Umgebungen}{}
+    \begin{itemize}[<+(1)->]
+        \item Analog eröffnen eckige Klammern eine Matheumgebung im \emph{displaystyle}:\medskip
+\begin{sclatex}[][righthand width=4.5cm]
+Hallo \[42 + 3 = 45\]
+\end{sclatex}
+    \pause\info{Beachte den Start der neuen Zeile, die übrigens zentriert wird.\pause{} Manche Ausdrücke werden im \emph{displaystyle} großzügiger gesetzt.}
+    \item Sehr hilfreich ist das bereits erwähnte Paket \T{amsmath}. Es fügt weitere \emph{Umgebungen} hinzu.
+    \item Neben \T{amsmath} existiert auch \T{mathtools} (bindet \T{amsmath} intern mit ein)
+    \end{itemize}
+\end{frame}
+
+\def\CommandMathPreview#1{\lstshowcmd[language=lLatex,morekeywords={[5]{#1}}]{\\(:bs:#1\\)} (\ensuremath{\csname#1\endcsname})}
+%% TODO: Current point
+\begin{frame}[fragile,t]{Mathe - Grundlegende Befehle}{}
+    \begin{itemize}[<+(1)->]
+        \item Viele Operatoren sind direkt über die Tastatur erreichbar (\T{+, -, *, <, >}) und können Problemlos verwendet werden.
+        \item Griechische Buchstaben:\pause{} \typesetList[CommandMathPreview]{alpha,beta,gamma}, \ldots{} sowie\pause{} \typesetList[CommandMathPreview]{Gamma,Omega,Pi}, \ldots
+        \item Operatoren wie \typesetList[CommandMathPreview]{sin,cos,tan},\pause{} \blatex{\\(\\exp\\)} (\(\exp\)) oder \blatex{\\(\\lim\\)} (\(\lim\)), \ldots
+        \item Auch nützlich:\pause{} \typesetList[CommandMathPreview]{cdot,pm,sum,prod,to,infty,int,neq,mapsto,leq,geq}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Exponent und Index}{}
+    \begin{itemize}[<+(1)->]
+        \item \say{Durch das Hütchen setzt man Text nach oben, durch einen Unterstrich nach unten}
+        \item Beispiel:
+\begin{sclatex}[][]
+ \(x^{2}_{3}\) \(y^{x_i}_{Hi}\) \\
+ \(\lim_{x \to \infty} x^{2^{2}}\)
+\end{sclatex}
+    \item Bei einzelnen Zeichen kann die Klammer weggelassen werden.
+    \item \textit{Übrigens: Ist \T{amsmath} eingebunden, kann mittels \blatex{\\text} Text im Mathemodus geschrieben werden}:\pause{}
+\begin{sclatex}[][]
+\(Hallo Welt \text{ Hallo Welt}\)
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Bruch, Wurzel, Binomiales}{}
+    \begin{itemize}[<+(1)->]
+        \item Bruch durch \blatex{\\frac\{:lan:Zähler:ran:\}\{:lan:Nenner:ran:\}}
+        \item Binomialkoeffizient mit \blatex{\\binom\{:lan:n:ran:\}\{:lan:k:ran:\}}
+        \item Wurzel durch \blatex{\\sqrt\{:lan:Mathe:ran:\}}
+        \item Beispiel:\pause{}
+\begin{sclatex}[][]
+\(\frac{n!}{k!(n-k)!} = \binom{n}{k}\) \\
+\(\sum_{i = 1}^n i =
+    \frac{n(n-1)}{2} \cdot \sqrt{1}\)
+\end{sclatex}
+    \item Kann beliebig verschachtelt werden.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Automatische Größe}{}
+    \begin{itemize}[<+(1)->]
+        \item Die Größe einiger Klammern und \say{Mathe-Symbole} kann mittels \blatex{\\left}, \blatex{\\middle} und \blatex{\\right} automatisch bestimmt werden.
+        \item \emph{Wichtig: } Ein \blatex{\\left} benötigt immer \blatex{\\right}.
+        \item Beispiel:\pause{}
+\begin{sclatex}[][]
+\([\frac{-13}{5},\infty)\),
+\(\left[\frac{-13}{5},\infty \right)\)
+\end{sclatex}
+        \item Wenn nur eine Klammer gewünscht kann ein Punkt platziert werden:\pause{}
+\begin{sclatex}[][]
+\(\left[\frac{-13}{5},\infty \right.\)
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Mengen}{}
+    \begin{itemize}[<+(1)->]
+        \item Eine Menge kann mittels \blatex{\\mathbb\{:lan:Buchstabe:ran:\}} definiert werden:
+\begin{sclatex}[][]
+\(\mathbb{N}, \mathbb{Q}, \mathbb{R}\)
+\end{sclatex}
+        \item Für Mengen-Operationen gibt es:\pause{} \typesetList[CommandMathPreview]{in,notin,subset,supset,subseteq,supseteq,setminus,times,emptyset,varnothing}.
+        \item Beispiel:\pause{}
+\begin{sclatex}[][]
+Sei \(x \in \mathbb{N}\) sowie
+\(M \subseteq \mathbb{R}^+\).
+\end{sclatex}
+        \item komplexe Zahlen: \typesetList[CommandMathPreview]{Re,Im}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Logik}{}
+    \begin{itemize}[<+(1)->]
+        \item Junktor:\pause{} \typesetList[CommandMathPreview]{neg,implies,iff,land,lor}.
+        \item Alternativen:\pause{} \typesetList[CommandMathPreview]{leftarrow,Leftarrow,rightarrow,Rightarrow,leftrightarrow,leftrightarrow,nearrow},~ \ldots
+        \item Quantoren:\pause{} \typesetList[CommandMathPreview]{exists,nexists,forall}.
+        \item Beispiel:\pause
+\begin{sclatex}[][righthand width=5.5cm,before lower={\scriptsize}]
+\(\forall h \in \text{Hamster}
+  \exists m \in \text{Menschen}:
+  \text{mag}(m,h) \)
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Abstände}{}
+    \begin{itemize}[<+(1)->]
+        \item In Mathe: \blatex{\\,} sowie \blatex{\\:} und \T{\textbackslash;} für Abstände.\pause{} \info{\blatex{\\!} erzeugt einen negativen Abstand.}
+        \item Beispiel:\pause
+\begin{sclatex}[][righthand width=5.5cm,before lower={\scriptsize}]
+\(\forall h \in \text{Hamster}\:
+  \exists m \in \text{Menschen}
+  \,: \text{mag}(m,h) \)
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]{Mathe - Matrizen}{}
+    \begin{itemize}[<+(1)->]
+        \item Matrix mittels \blatex{pmatrix}\pause{} (\blatex{matrix} ist ohne Klammer).
+        \item Ausrichten durch Und, neue Zeile durch \blatex{\\\\}.
+        \item Beispiel:\pause
+\begin{sclatex}[][]
+\(\begin{pmatrix}
+  1 & 2 & 3 & 42 \\
+  219 & \cdots & 1 & 2 \\
+  x_1 & 3 & 3 & 7
+\end{pmatrix}\)
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]{Mathe - Fallunterscheidungen}{}
+    \begin{itemize}[<+(1)->]
+        \item Partiell definierte Funktionen können ähnlich zu \blatex{matrix} mittels \blatex{cases} realisiert werden.
+        \item Beispiel:\pause
+\begin{sclatex}[][righthand width=5.5cm,before lower={\scriptsize}]
+\(\min(x,y) = \begin{cases}
+  x, & \text{ falls } x < y, \\
+  y, & \text{ sonst.}
+\end{cases}\)
+\end{sclatex}
+    \item Doch was ist dieses \blatex{cases} überhaupt?
+    \end{itemize}
+\end{frame}
+
+% TODO: formatierung inmathe? vielleicht wananders aber \amthscr. bidöööö
+
+\subsection{Exkurs: Umgebungen}
+\begin{frame}[fragile,t]{Exkurs: Umgebungen}{}
+    \begin{itemize}[<+(1)->]
+        \item An sich bereits bereits bekannt: \blatex{document}.
+    \item Wird eingeleitet durch \blatex{\\begin\{:lan:Name:ran:\}}\pause{} und beendet durch \blatex{\\end\{:lan:Name:ran:\}}.
+    \item Innerhalb einer Umgebung können Befehle eine andere Bedeutung haben,\pause{} oder sogar einzelne Zeichen eine besondere Rolle einnehmen.
+    \item Vorgriff: Tabelle (Umgebung: \blatex{tabular}), hier trennt das Und-Symbol die Spalten und \blatex{\\\\} die Zeilen:\pause
+  \begin{sclatex}[][righthand width=4.5cm]
+\begin{tabular}{l|c|r}
+  Hallo & Welt & Na du? \\
+  Das & ist \\
+  doch & echt & toll!
+\end{tabular}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - align und align*}{}
+    \begin{itemize}[<+(1)->]
+        \item So liefert \T{amsmath} die Umgebung \blatex{align}. Hier kann das Und-Symbol verwendet werden um Gleichungen horizontal auszurichten. Wieder startet \blatex{\\\\} eine neue Zeile:
+\begin{sclatex}[][righthand width = -1cm,listing above text]
+\begin{align}
+\lim_{n \to \infty} 3^2 \cdot \frac{1}{n} &= \lim_{n \to \infty} 9 \cdot \lim_{n \to \infty} \frac{1}{n} \\
+    &= 9 \cdot 0 = 0
+\end{align}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - align und align*}{}
+    \begin{itemize}[<+(1)->]
+        \item Analog funktioniert \blatex{align*}, allerdings werden hier die Gleichungen nicht durchnummeriert. \pause{} \info{Es sind beliebig viele Zeilen möglich.}
+        \item Wenn diese Umgebungen über mehrere Seiten umbrechen dürfen, setze: \blatex{\\allowdisplaybreaks[2]} in der Präambel.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Die wichtigsten Befehle}{}
+    \begin{itemize}[<+(1)->]
+        \item Es existieren viel zu viele, die man auch nicht auswendig lernen muss\pause{} (das meiste kommt mit der Zeit intuitiv).
+        \item Beispiel Gleichung 1:\pause{}
+\begin{sclatex}[][righthand width = -1cm,listing above text]
+\[
+    \sum_{i = 0}^{42} \prod_{j = 0}^i \lim_{x_i^2 \to x_j^{42}}
+    = \frac{3 \cdot \frac{\pi}{2} +
+        \left( 1 + \frac{\Omega_\theta}{2}\right)}
+        {\sqrt{13} \pm \sin(\lceil x \cdot \tau \rceil)}
+\]
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Mathe - Die wichtigsten Befehle}{}
+    \begin{itemize}
+        \item Beispiel Gleichung 2:\pause{}
+\begin{sclatex}[][righthand width = -1cm,listing above text]
+\[
+    \forall i \in X = \mathbb{N} \exists x_i, x_j \in D
+        = \mathbb{R} : (x_i \leq 42 \land x_j \neq -x_i)
+        \lor D \cap X = D \cup X = \emptyset \text{ so nämlich.}
+\]
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\def\pausevoid#1{\pause{}\solGet{keywordC}{#1}}
+\begin{frame}[fragile,t]{Mathe - Auch nützlich}{}
+    \begin{itemize}[<+(1)->]
+        \item Für komplexere Gleichungen: \typesetList[pausevoid]{gather,gather*,alignat,alignat*,array,equation}.
+        \item Und Vieles mehr \Laughey.
+        \item In der Regel:\pause{} \say{Ich brauche X, ich befrage das Internet}
+        \item Wenn man nur das Aussehen kennt:\pause{} \url{http://detexify.kirelabs.org/classify.html}\pause{} \info{Da darf man malen \Smiley.}
+    \end{itemize}
+\end{frame}
+% \fi
+
+\def\dhitem{\stepcounter{enumi}\item[{\tikz[scale=0.25]{\duck[signpost={\scalebox{0.4}{\arabic{enumi}.}},jacket=cprimary!60!white]}}]}
+
+\section{Auflistungen und Tabellen}
+\begin{frame}[fragile]{}{}
+\begin{center}\scriptsize
+    \begin{minipage}{0.85\linewidth}
+        \begin{multicols}{2}
+            \begin{enumerate}
+                \dhitem Zitternd greift er die Feder,
+                \dhitem Mühsam das letzte Blatt.
+                \dhitem Legt es auf den Einband aus Leder,
+                \dhitem Mit dem alles begonnen hat.
+                \dhitem Er beginnt sein Werk zu vollenden,
+                \dhitem An diesem schönen Sommertag.
+                \dhitem Widmet die Worte den Enten
+                \dhitem Die er eben noch gesehen hat.
+            \end{enumerate}
+        \end{multicols}
+    \end{minipage}\\[1.15cm]
+\begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+    \node[below,align=center,scale=0.5] at(0,-1.5) {\Huge Auflistungen und Tabellen\\\info{Nein, nicht alles handelt von Enten.}};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\subsection{Auflistungen}
+\begin{frame}[fragile,t]{Auflistungen - Die wichtigsten}
+    \begin{enumerate}[<+(1)->]
+        \dhitem Latex liefert drei wichtige Umgebungen mit: \typesetList[pausevoid]{itemize,enumerate,description}.
+        \dhitem In ihnen kann mithilfe von \blatex{\\item} ein neuer (Unter-)Punkt gesetzt werden.
+        \dhitem Häufiger Fehler:\pause{} Die Umgebungen benötigen mindestens ein \blatex{\\item},\pause{} sonst wirft Latex den Fehler:\pause{} \bvoid{! LaTeX Error: Something's wrong--perhaps a missing \\item.}
+        \dhitem \blatex{\\item} kann mittels eckiger Klammern ein Argument übergeben bekommen!\pause{} \info{Dies ist wichtig für \blatex{description}}.
+    \end{enumerate}
+\end{frame}
+
+% \fi
+
+
+\begin{frame}[fragile,t]{Auflistungen - Beispiele}
+    \begin{itemize}[<+(1)->]
+        \item Beispiel mit \blatex{itemize}:\pause{}
+\begin{sclatex}[][]
+\begin{itemize}
+    \item Hallo
+    \item Welt
+    \item Hihi
+\end{itemize}
+\end{sclatex}
+        \item Übriges: Diese Umgebungen lassen sich bis zu einer gewissen Tiefe (in der Regel vier) verschachteln!
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]{Auflistungen - Beispiele}
+    \begin{itemize}[<+(1)->]
+        \item Beispiel mit \blatex{enumerate}:\pause{}
+\begin{sclatex}[][]
+\begin{enumerate}
+    \item Hallo
+    \item Welt
+    \item Hihi
+    \item Beachte: \begin{enumerate}
+        \item Na du?
+        \item Enteeeen
+    \end{enumerate}
+\end{enumerate}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]{Auflistungen - Beispiele}
+    \begin{itemize}[<+(1)->]
+        \item Beispiel mit \blatex{description}:\pause{}
+\begin{sclatex}[][]
+\begin{description}
+    \item[Wichtig:] Hallo
+    \item[Echt wichtig:] Welt
+    \item[Steinzeit:] Hihi
+\end{description}
+\end{sclatex}
+        \item Das Aussehen kann mittels \T{enumitem} quasi beliebig gestaltet werden.
+        \item Zeilen- sowie Seitenumbrüche werden automatisch mit Einschub vollzogen.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{DescriptionDokument}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    \begin{description}
+        \item[Wichtig:] Hallo
+        \item[Echt wichtig:] Welt
+        \item[Steinzeit:] Hihi
+    \end{description}
+\end{document}
+\end{tcboutputlisting}
+\begin{frame}[fragile,t]{Auflistungen - Description im Dokument}
+    \begin{itemize}[<+(1)->]
+        \item \blatex{description} innerhalb eines \say{normalen} Dokuments:\pause{}
+        \eblLoadLtx{DescriptionDokument}{graphics options={trim=2cm 20.5cm 10cm 3cm, clip}}{listing options={style=LSTADVANCED,language=lLatex},before upper={\lstfs{9}},before lower={\pause}}
+    \end{itemize}
+\end{frame}
+
+
+\ltxpreview{EnumerateListe}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{enumitem}
+\newlist{aufgaben}{enumerate}%
+                    {1}
+\setlist[aufgaben]%
+    {label=\textbf{\alph*)}}
+
+\begin{document}
+    \begin{aufgaben}
+        \item Hi
+        \item Ho
+    \end{aufgaben}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[fragile,t]{Auflistungen - Bonus: Aufgabennumerierung}
+    \begin{itemize}[<+(1)->]
+        \item Mittels \T{enumitem} können wir eine neue Umgebung erzeugen, die gewünscht nummeriert:\pause{} \eblLoadLtx{EnumerateListe}{graphics options={trim=2cm 22cm 10cm 3cm, clip}}{listing options={style=LSTADVANCED,language=lLatex},before upper={\lstfs{9}},before lower={\pause}}
+    \end{itemize}
+\end{frame}
+
+
+\ltxpreview{EnumerateListeAgain}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{enumitem}
+\begin{document}
+    \begin{enumerate}[label=\textbf{\Roman*)}]
+        \item Hi
+        \item Ho
+    \end{enumerate}
+\end{document}
+\end{tcboutputlisting}
+
+\def\pausevoidcmd#1{\pause{}\solGet{keywordB}{\textbackslash#1}}
+\begin{frame}[fragile,t]{Auflistungen - Bonus: \T{enumitem}}
+    \begin{itemize}[<+(1)->]
+        \item Das Setzen von \T{label} (bei \blatex{\\setlist}) erlaubt anstelle von \blatex{\\alph*} andere \say{Einstellungen} für den Iterator: \typesetList[pausevoidcmd]{alph*,Alph*,arabic*,Roman*,roman*}.\pause{} \info{Hierfür und für andere Einstellungen: Dokumentation lesen/Internet fragen/Rum-Probieren/\ldots!}
+        \item Diese Optionen können auch nur einmalig angewandt werden:\pause{} \eblLoadLtx{EnumerateListeAgain}{graphics options={trim=2cm 22cm 10cm 3cm, clip}}{listing options={style=LSTADVANCED,language=lLatex},before upper={\lstfs{9}},before lower={\pause}}
+    \end{itemize}
+\end{frame}
+
+\subsection{Tabellen}
+\begin{frame}[fragile,t]{Tabellen - Vo(m/n) Spalten}
+    \begin{itemize}[<+(1)->]
+        \item Wichtige Umgebung: \blatex{tabular}
+        \item Benötigt als Argument die Ausrichtungen der jeweiligen Spalten:\pause{} \T{l} - linksbündig, \T{r} - rechtsbündig,\pause{} \T{c} - zentriert und \pause{} \T{p}\{\# cm\} - linksbündig, \# cm breit.
+        \item Innerhalb der Tabelle trennt das Und-Symbol (\&) die Spalten und \blatex{\\\\} die Zeilen.
+        \item Beispiel:
+\begin{sclatex}[][righthand width=5cm]
+\begin{tabular}{lrcp{0.75cm}}
+  Hihi & Huhu & Hoho & Hallo Du \\
+  A & B & C & D
+\end{tabular}
+\end{sclatex}
+        \item die Länge der \T{p}-Spalte kann auch in Millimeter oder ähnlichem angegeben werden.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - Linien}
+    \begin{itemize}[<+(1)->]
+        \item Bei der Spaltenangabe kann die Pipe (|) für einen vertikalen Strich verwendet werden.\pause{} In der Tabelle selbst setzt \blatex{\\hline} eine horizontale Linie.\pause{} \info{Stilhinweis: Vertikale Linien sind grauenvoll und sollten vermieden werden \Smiley.}
+        \item Für detailliertere Spezifikation der Linien: Paket \T{hhline}.
+        \item Beispiel: \pause
+\begin{sclatex}[][righthand width=5cm]
+\begin{tabular}{l||r|c|p{0.75cm}|}
+  \hline
+  Hihi & Huhu & Hoho & Hallo Du \\
+  \hline \hline
+  A & B & C & D \\ \hline
+\end{tabular}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - In Hübsch}
+    \begin{itemize}[<+(1)->]
+        \item Das Paket \T{booktabs} liefert: \typesetList[pausevoidcmd]{toprule,midrule,bottomrule}~für \blatex{\\hline}.
+        \item Verwendung wie bisher: \pause
+\begin{sclatex}[][righthand width=5cm]
+\begin{tabular}{lrcp{0.75cm}}
+  \toprule
+  Hihi & Huhu & Hoho & Hallo Du \\
+  \midrule
+  A & B & C & D \\ \bottomrule
+\end{tabular}
+\end{sclatex}
+    \item Booktabs beißt sich \say{absichtlich} mit vertikalen Linien \Laughey.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - Mathe-Spalte}
+    \begin{itemize}[<+(1)->]
+        \item Hinweis: Wenn komplette Tabelle als Mathe-Tabelle empfiehlt sich: \solGet{keywordC}{array}.
+        \item Sonst kann jede Spalte mit einem gewissen Code begonnen und beendet werden!
+        \item Hierzu wird die Syntax: \blatex{>\{:lan:pre:ran:\}:lan:coltype:ran:<\{:lan:post:ran:\}} verwendet
+        \item Damit geht:\pause{}
+        \begin{sclatex}[][righthand width=5cm]
+\begin{tabular}{>{\(}l<{\)}l}
+  Mathe & Kein Mathe \\
+  42^3 + x_i & immer noch nö
+\end{tabular}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - Super-Spalten}
+    \begin{itemize}[<+(1)->]
+        \item Dies ermöglicht viel Freude \Laughey.
+        \item Beispiel: \pause{}
+        \begin{sclatex}[][righthand width=5cm]
+\begin{tabular}%
+  {>{\(}l<{\)}>{\itshape}lr<{Hey}}
+  Mathe & kursiv & Stups: \\
+  42^3 & hi & Wups:
+\end{tabular}
+\end{sclatex}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - Eigene Spalten}
+    \begin{itemize}[<+(1)->]
+        \item Schreiben wieder redundant \Sadey.\pause{} Paket: \T{tabularx}.
+        \item Mittels \blatex{\\newcolumntype} lassen sich eigene Spalten definieren:\pause{}
+\begin{sclatex}[][righthand width=5cm]
+\newcolumntype{u}{>{\(}c<{\)}}
+\begin{tabular}{ul}
+  Mathe & Kein Mathe \\
+  42^3 + x_i & immer noch nö
+\end{tabular}
+    \end{sclatex}
+    \item Liefert zudem: Die \T{X}-Spalte,\pause{} vergleichbar zu \T{p},\pause{} allerdings wird Breite automatisch bestimmt - funktioniert nur innerhalb von \blatex{tabularx}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Tabellen - Lohnt sich anzuschauen}
+    \begin{itemize}[<+(1)->]
+        \item Die Umgebung \blatex{table}.\pause{} \info{Beschriften und Auflisten von Tabellen.}
+        \item Das Paket \T{longtable}.\pause{} \info{Wenn die Tabelle über mehrere Seiten gehen soll/Seitenumbrüche beinhaltet}
+        \item Das Paket \T{ltablex}.\pause{} \info{Macht \T{tabularx} effektiv zu einem \T{longtable}}
+        \item Das Paket \T{multirow}.\pause{} \info{Vereinigen von mehreren Spalten/Zeilen.}
+        \item Das Paket \T{tabu}.\pause{} \emph{Warnung: \T{tabu} ist aktuell \say{unmaintained} und sollte deswegen mit Vorsicht genossen werden!.\pause{} Es liefert trotzdem schöne Ideen \Smiley}.\pause{} \info{Ermöglicht gezieltes Einfärben, Spaltenkontrolle, \ldots}
+    \end{itemize}
+\end{frame}
+
+\section{Source Code}
+\begin{frame}[fragile]{}{}
+\begin{center}
+% \makeatletter
+% \definecolor{matrixgreen}{RGB}{29, 195, 37} %rgb(29, 195, 37)
+% \definecolor{matrixgreenhl}{RGB}{145, 255, 20} %rgb(145, 255, 20)
+
+
+% \begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+%     \foreach \layer/\scalefactor/\stepfirst in {-.75/0.25/-0.94,-.25/0.25/-0.89,0/0.6/-0.8}{
+%         \foreach \col in {-1,\stepfirst,...,3.25}{
+%             \pgfmathsetmacro\dodraw{int(3.2*abs(rand))}
+%             \pgfmathsetmacro\xoff{0.25*(1+\stepfirst)*rand}
+%             \ifnum\dodraw>0
+%             \foreach[count=\linegrad] \line in {3,2.85,...,0}{
+%                 \pgfmathsetmacro\yoff{0.25*(1+\stepfirst)*rand}
+%                 \pgfmathsetmacro\rndsymb{int(int(8*abs(rand))+1)}
+%                 \pgfmathsetmacro\shading{(100-15*\linegrad)/100}
+%                 \pgfmathsetmacro\doydraw{int(int(30-\linegrad)*abs(rand))}
+%                 \ifnum\doydraw>1
+%                     \ifnum\linegrad=21\relax% last
+%                         \def\nodetarcol{matrixgreenhl} \else
+%                         \def\nodetarcol{matrixgreen} %
+%                     \fi
+%                 \else\def\nodetarcol{matrixgreenhl}\breakforeach\fi%force last
+%                 \node[\nodetarcol] at(\col+\xoff,\line-\yoff,\layer) {\scalebox{\scalefactor}{\RndChinese{\rndsymb}}};
+%             }
+%             \fi
+%         }
+%     }
+%     \duck[sunglasses=black,jacket=black,parting=black]
+%     \node[below] at(1,-0.5) {$\prod\forall\top\mathbb{H}\varepsilon$};
+% \end{tikzpicture}
+% \makeatother
+\includegraphics{matrixduck/mduck.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile,t]{Listings - Motivation}
+    \pause{} Wie kann so eine adrette Ente erschaffen werden?\pause{} So: \info{Der komplette Aufwand betrug: $23$ Minuten}\pause{}\lstfs{5} % 8
+    \begin{plainlatex}
+% ...
+\begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+    \foreach \layer/\scalefactor/\stepfirst/\ifirst in {-.75/0.25/-1.52/-1.56,-.25/0.25/-1.39/-1.5,0/0.6/-1.3/-1.5}{
+        \foreach \col in {\ifirst,\stepfirst,...,3.25}{
+            \pgfmathsetmacro{\dodraw}{int(3.9*abs(rand))}
+            \pgfmathsetmacro{\xoff}{0.25*(1+\stepfirst)*rand}
+            \pgfmathsetmacro{\dopacity}{0.4+\scalefactor}
+            \ifnum!**!\dodraw>0
+            \foreach[count=\linegrad] \line in {3,2.85,...,-0.5}{
+                \pgfmathsetmacro{\yoff}{0.125*(1+\stepfirst)*rand}
+                \pgfmathsetmacro{\rndsymb}{int(int(8*abs(rand))+1)}
+                \pgfmathsetmacro{\shading}{(100-15*!**!\linegrad)/100}
+                \pgfmathsetmacro{\doydraw}{int(int(30-\linegrad)*abs(rand))}
+                \ifnum!**!\doydraw>1
+                    \ifnum!**!\linegrad=24!**!\relax% last
+                        \def!**!\nodetarcol{matrixgreenhl} \else
+                        \def!**!\nodetarcol{matrixgreen} %
+                    \fi
+                \else!**!\def!**!\nodetarcol{matrixgreenhl}!**!\breakforeach!**!\fi%force last
+                \node[\nodetarcol,opacity=\dopacity] at(\col+\xoff,\line-\yoff,\layer) {\scalebox{\scalefactor}{\RndChinese{\rndsymb}}};
+            }\fi
+        }
+    }
+    \duck[sunglasses=black,jacket=black,parting=black]
+    \node[below] at(1,-0.5) {\sffamily Listings und Pseudocode};
+\end{tikzpicture}
+% ...
+    \end{plainlatex}
+\end{frame}
+\subsection{Listings}
+\begin{frame}[fragile,t]{Listings - Es gibt Alternativen}
+    \begin{itemize}[<+(1)->]
+        \item Ich verwende \T{listings}, es existiert aber auch (zum Beispiel) \T{minted}.\pause{} \info{\T{minted} verwendet die \T{pygments}-Bibliothek (Python), fordert also die Installation weiterer Programme und \emph{shell escape}!}
+        \item Das Einbinden des Pakets stellt die Umgebung \blatex{lstlisting} zur Verfügung:\pause{}\\\lstfs{7} \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{lstlisting}[language=java]
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{lstlisting}
+\end{slatex}
+\end{minipage}\hfill\begin{minipage}{0.425\linewidth}
+\begin{plainvoid}[language=java,style=,basicstyle={\scriptsize}]
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{plainvoid}
+\end{minipage}
+    \item Sowie \blatex{\\lstinline} und \blatex{\\lstinputlisting}.\pause{} \info{Hierfür Dokumentation oder Erklärdokument betrachten.}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Listings - Eigener Stil}
+    \begin{itemize}[<+(1)->]
+        \item Hinweis: \url{https://gist.github.com/EagleoutIce/1490bfd4d71eef73b032670921eab69a}
+        \item Ermöglicht mittels \blatex{\\lstdefinestyle} Konfiguration der Umgebung. Beispiel:\pause{}
+        \begin{slatex}
+\lstdefinestyle{MeinStil}{
+    breaklines      = true,
+    stringstyle     = \color{teal},
+    keywordstyle    = \color{orange},
+    basicstyle      = \ttfamily,
+    commentstyle    = \color{gray}\itshape,
+    numbers         = left
+}
+\end{slatex}
+    \end{itemize}
+\end{frame}
+\lstdefinestyle{MeinStil}{
+    breaklines      = true,
+    stringstyle     = \color{teal},
+    keywordstyle    = \color{orange},
+    basicstyle      = \ttfamily\scriptsize,
+    commentstyle    = \color{gray}\itshape,
+    numbers         = left,
+    numbersep       = 7pt,
+    numberstyle     = \tiny,
+    keywordstyle    = [2]\itshape
+}
+\begin{frame}[fragile,t]{Listings - Eigener Stil}
+    \begin{itemize}[<+(1)->]
+        \item Ermöglicht:\pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+        \begin{slatex}
+\begin{lstlisting}[language=java,style=MeinStil]
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{lstlisting}
+\end{slatex}
+\end{minipage}\hfill\begin{minipage}{0.425\linewidth}
+\begin{plainvoid}[language=java,style=MeinStil]
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{plainvoid}
+\end{minipage}
+    \item Die explizite Angabe für jedes \blatex{lstlisting} kann mittels:
+    \begin{plainlatex}
+\lstset{language=java,style=MeinStil}
+    \end{plainlatex}
+        erspart werden.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Listings - Eigene Sprache}
+    \begin{itemize}[<+(1)->]
+    \item Um zum Beispiel eigene Keywords definieren zu können:\pause{}
+    \begin{slatex}
+\lstdefinelanguage{MeinJava}{
+    language=java,
+    alsoletter={@_},
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    keywordsprefix={@},
+    morekeywords={String, var},
+    morekeywords=[2]{System}
+}
+    \end{slatex}
+    \end{itemize}
+\end{frame}
+\lstdefinelanguage{MeinJava}{
+    language=java,
+    alsoletter={@_},
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    keywordsprefix={@},
+    morekeywords={String, var},
+    morekeywords=[2]{System}
+}
+\begin{frame}[fragile,t]{Listings - Eigener Stil}
+    \begin{itemize}[<+(1)->]
+        \item Ermöglicht:\pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+        \begin{slatex}
+\lstset{%
+    language=MeinJava,style=MeinStil}
+\begin{lstlisting}
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{lstlisting}
+\end{slatex}
+\end{minipage}\hfill\begin{minipage}{0.425\linewidth}
+\begin{plainvoid}[language=MeinJava,style=MeinStil]
+public static void
+        main(String[] args){
+    System.out.println("Hi");
+}
+\end{plainvoid}
+\end{minipage}
+    \item Einziges Problem was übrig ist: Umlaute erzeugen einen Fehler!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Listings - Mähr Zöichän}
+    \begin{itemize}[<+(1)->]
+        \item Wir verwenden \emph{literate}s. \pause{}\info{Ersetzungsregeln für Zeichen(-ketten).}
+        \item Definieren (Präambel):
+        \begin{slatex}
+\lstset{literate={ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1
+        {ä}{{\"a}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+        {:hello:}{{Hey du}}5
+}
+        \end{slatex}
+        \item Die Zahl steht für die Anzahl der ersetzten Zeichen.\pause{} \info{So bedeutet \blatex{\{:hello:\}\{\{Hey du\}\}5}: ersetze \say{\T{:hello:}} mit\pause{} \say{\T{Hey du}}.}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Listings - Mähr Zöichän}
+    \begin{itemize}[<+->]
+        \item Ermöglicht: \pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+        \begin{slatex}
+\lstset{%
+    language=MeinJava,style=MeinStil}
+\begin{lstlisting}
+public static void
+        main(String[] args){
+    System.out.println(":hello: dü dää");
+}
+\end{lstlisting}
+\end{slatex}
+\end{minipage}\pause{}\hfill\begin{minipage}{0.425\linewidth}
+\lstset{literate={ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1
+        {ä}{{\"a}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+        {:hello:}{{Hey\textvisiblespace{}du}}5
+}
+\begin{plainvoid}[language=MeinJava,style=MeinStil]
+public static void
+        main(String[] args){
+    System.out.println(":hello: dü dää");
+}
+\end{plainvoid}
+\end{minipage}
+    \item Es empfiehlt sich die Literates aus \url{https://gist.github.com/EagleoutIce/1490bfd4d71eef73b032670921eab69a} einfach zu kopieren und gegebenenfalls zu erweitern.
+    \end{itemize}
+\end{frame}
+
+\subsection{Pseudocode}
+\begin{frame}[fragile,t]{Pseudocode - Das Paket der Wahl}
+    \begin{itemize}[<+(1)->]
+        \item Ich verwende hier \T{algorithm2e}.\pause{} Das Ergebnis kann optisch (leicht) abweichen (einfach Dokumentation anschaun')
+        \item Wir erhalten (unter anderem) die Umgebung \blatex{algorithm}.
+        \item Beispiel:\pause{}\\
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    hi
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill\begin{minipage}{0.425\linewidth}
+\begin{algorithm}{}
+    \StartCode
+    hi
+\end{algorithm}
+\end{minipage}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Pseudocode - Benennung, In- und Output}
+    \begin{itemize}[<+(1)->]
+        \item Benennen mittels \blatex{\\caption}.
+        \item Input- und Ergebnis-Felder mittels: \blatex{\\KwIn} und \blatex{\\KwOut}
+        \item Beispiel:\pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    \KwIn{Eine Ente}
+    \KwOut{Einer Super-Ente}
+    hi
+    \caption{Super Enten-Transformator}
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+    \scalebox{0.625}{
+        \begin{minipage}{0.725\linewidth}
+\begin{algorithm}{Super Enten-Transformator}
+    \KwIn{Eine Ente}
+    \KwOut{Einer Super-Ente}
+    \StartCode
+    hi
+\end{algorithm}
+\end{minipage}
+    }
+    \item Analog: \blatex{\\KwData} und \blatex{\\KwResult}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Pseudocode - Schleifen}
+    \begin{itemize}[<+(1)->]
+        \item Schleife mit \blatex{\\For} oder \blatex{\\While}.
+        \item Beispiel:\pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    \For{i = 0 \KwTo 42}{
+        hi
+    }
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+        \begin{minipage}{0.425\linewidth}
+\begin{algorithm}{}
+    \StartCode
+    \For{i = 0 \KwTo 42}{
+        hi
+    }
+\end{algorithm}
+\end{minipage}\\
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    \While{Ente gut}{
+        Alles gut.
+    }
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+        \begin{minipage}{0.425\linewidth}
+\begin{algorithm}{}
+    \StartCode
+    \While{Ente gut}{
+        Alles gut.
+    }
+\end{algorithm}
+\end{minipage}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Pseudocode - Fallunterscheidungen}
+    \begin{itemize}[<+(1)->]
+        \item Schleife mit \blatex{\\If} und \blatex{\\Else} (Kurz: \blatex{\\eIf}) oder \blatex{\\Switch} und \blatex{\\Case}.
+        \item Beispiel:\pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    \eIf{Ente gut}{
+        Alles Gut
+    }{Oh Goooott}
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+        \begin{minipage}{0.425\linewidth}\footnotesize
+\begin{algorithm}{}
+    \StartCode
+    \eIf{Ente gut}{
+        Alles Gut
+    }{Oh Goooott}
+\end{algorithm}
+\end{minipage}
+    \item Zeilenende mit: \blatex{\\;}:\pause{}\\\lstfs{7}
+    \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+\eIf{Ente gut}{Alles Gut\;}
+    {Oh Goooott\;}
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+    \begin{minipage}{0.425\linewidth}\footnotesize
+\begin{algorithm}{}
+\StartCode
+\eIf{Ente gut}{
+    Alles Gut\;
+}{Oh Goooott\;}
+\end{algorithm}
+\end{minipage}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,t]{Pseudocode - Kommentare und Kleinigkeiten}
+    \begin{itemize}[<+(1)->]
+        \item Wenn kein Semikolon ausgegeben werden soll (bei \blatex{\\;}) einfach: \solGet{keywordB}{\textbackslash DontPrintSemicolon} zu Anfang des Codes.
+        \item Kommentare können mittels \blatex{\\tcc} (\T{C}-Style) oder \blatex{\\tcp} (\T{C++}-Style) gesetzt werden.
+        \item Beispiel: \pause{}\\\lstfs{7}
+        \begin{minipage}{0.5\linewidth}
+\begin{slatex}
+\begin{algorithm}
+    \tcc{Enten maaarsch:}
+    \eIf{Ente gut}{
+        Alles Gut\;
+    }{Oh Goooott\;}
+    \tcp{Tapp, tapp, tapp}
+\end{algorithm}
+\end{slatex}
+\end{minipage}\hfill
+        \begin{minipage}{0.425\linewidth}\footnotesize
+\begin{algorithm}{}
+    \StartCode
+    \tcc{Enten maaarsch:}
+    \eIf{Ente gut}{
+        Alles Gut\;
+    }{Oh Goooott\;}
+    \tcp{Tapp, tapp, tapp}
+\end{algorithm}
+\end{minipage}
+    \item Siehe Dokumentation für weitere Feinheiten.
+    \end{itemize}
+\end{frame}
+
+\section{Die aktuelle TeX-Ente :D}
+\begin{frame}[fragile]{}{}
+\begin{center}
+\begin{tikzpicture}[scale=2.25,every node/.style={transform shape}]
+    \duck[snowduck,vampire]
+\end{tikzpicture}
+\end{center}
+\end{frame}
+%TODO: links wie hyperref
+%TODO: normales dokument (toc, lof, lot, ....)
+%TODO: BibTex, Glossaries, Makeindex....
+%TODO: Befehle :D
+%TODO: header, footer
+%TODO: geometry package
+%TODO: Grafiken
+%TODO: ganz viele Beispiele :D
+%TODO: Tcolorbox
+\end{document}

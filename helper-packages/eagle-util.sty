@@ -1,0 +1,51 @@
+%% eagle-util.sty
+%%
+%% --------------------------------------------------------------------------
+%%
+%% Autor: Florian Sihler, 21.08.2020
+%%
+%% Liefert die Kommandos um Listen zu setzen
+%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{eagle-util}[2020/08/21 v1.0.0 Setzen von Listencomponenten]
+
+\newcommand*{\getListLength}[1]{%
+    \def\@tmpl{#1}%
+    \gdef\@c@tmp{0}%
+    \foreach \@tmp[count=\@@c@tmp] in \@tmpl {\xdef\@c@tmp{\@@c@tmp}}%
+}
+
+\newcommand*{\TypesetList}[3][typesetVoid]{\bgroup%
+    \edef\@typeset@list@and{#3}\edef\@@tmp{\noexpand\@@typesetList[\unexpanded{#1}]{#2}}\@@tmp%
+    \egroup%
+}
+
+\newcommand*{\typesetList}[2][typesetVoid]{%
+    \edef\@@tmp{\noexpand\@@typesetList[\unexpanded{#1}]{#2}}\@@tmp%
+}
+
+%% this will typeset a List in German List-Notation
+\newcommand*{\@@typesetList}[2][typesetVoid]{%
+    \def\@tmpl{#2}%
+    \getListLength{#2}%
+    \foreach \x[count=\i] in \@tmpl {%
+        \ifnum\i>1 \ifnum\i=\@c@tmp%
+        ~und \else%
+        ,\space\fi%
+        \fi%
+        \@nameuse{#1}{\x}%
+    }\ignorespaces%
+}
+
+\newcommand{\lstshowcmd}[2][]{\edef\@tmp@@b{\noexpand\lstinline[#1]!#2!}\@tmp@@b}
+
+\def\previewColor#1{\emph{#1} \tikz[baseline=-0.6ex]{\draw[fill=#1] circle (4.5pt);}}
+% colorpreview
+
+
+\let\T\texttt
+\def\info#1{\bgroup\scriptsize\textcolor{gray}{(#1)}\egroup}
+\def\say#1{\glqq{#1}\grqq{}}
+
+\endinput

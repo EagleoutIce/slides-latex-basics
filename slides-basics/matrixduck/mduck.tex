@@ -1,0 +1,49 @@
+\documentclass[preview]{article}
+\usepackage{xcolor,tikz}
+
+\usepackage[active,tightpage]{preview}
+\usepackage{CJK}
+\usepackage{tikzducks}
+\usepackage{LILLYxMATH}
+\pgfmathsetseed{\number\pdfrandomseed}
+
+\begin{document}
+\makeatletter
+\begin{preview}
+\definecolor{matrixgreen}{RGB}{29, 195, 37} %rgb(29, 195, 37)
+\definecolor{matrixgreenhl}{RGB}{145, 255, 20} %rgb(145, 255, 20)
+
+\def\RndChinese#1{\expandafter\begin{CJK*}{UTF8}{gbsn}%
+\ifcase#1 嫠\or 案\or 煤\or 洳\or 橱\or 橱\or 迎\or 大\or 田\or 衙\else \@ctrerr \fi\end{CJK*}%
+}
+
+    \begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
+        \foreach \layer/\scalefactor/\stepfirst/\ifirst in {-.75/0.25/-1.52/-1.56,-.25/0.25/-1.39/-1.5,0/0.6/-1.3/-1.5}{
+            \foreach \col in {\ifirst,\stepfirst,...,3.25}{
+                \pgfmathsetmacro\dodraw{int(3.9*abs(rand))}
+                \pgfmathsetmacro\xoff{0.25*(1+\stepfirst)*rand}
+                \pgfmathsetmacro\dopacity{0.4+\scalefactor}
+                \ifnum\dodraw>0
+                \foreach[count=\linegrad] \line in {3,2.85,...,-0.5}{
+                    \pgfmathsetmacro\yoff{0.125*(1+\stepfirst)*rand}
+                    \pgfmathsetmacro\rndsymb{int(int(8*abs(rand))+1)}
+                    \pgfmathsetmacro\shading{(100-15*\linegrad)/100}
+                    \pgfmathsetmacro\doydraw{int(int(30-\linegrad)*abs(rand))}
+                    \ifnum\doydraw>1
+                        \ifnum\linegrad=24\relax% last
+                            \def\nodetarcol{matrixgreenhl} \else
+                            \def\nodetarcol{matrixgreen} %
+                        \fi
+                    \else\def\nodetarcol{matrixgreenhl}\breakforeach\fi%force last
+                    \node[\nodetarcol,opacity=\dopacity] at(\col+\xoff,\line-\yoff,\layer) {\scalebox{\scalefactor}{\RndChinese{\rndsymb}}};
+                }
+                \fi
+            }
+        }
+        \duck[sunglasses=black,jacket=black,parting=black]
+        \node[below] at(1,-0.5) {\sffamily Listings und Pseudocode};
+    \end{tikzpicture}
+\end{preview}
+
+\makeatother
+\end{document}
