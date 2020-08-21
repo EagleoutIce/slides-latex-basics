@@ -38,7 +38,6 @@ jobs:
           working_directory: slides-basics
           root_file: |
             noanim_ltx_folien.tex
-            ltx_folien.tex
           latexmk_shell_escape: true
           args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
 
@@ -48,15 +47,16 @@ jobs:
           working_directory: slides-advanced
           root_file: |
               noanim_ltx_cmd_folien.tex
-              ltx_cmd_folien.tex
           latexmk_shell_escape: true
           args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e  '$max_repeat=2' -f"
 
       - name: Commit PDF
         run: |
+          cp ./slides-basics/noanim_ltx_folien.pdf ./latex_folien.pdf
+          cp ./slides-advanced/noanim_ltx_cmd_folien.pdf ./latex_2_folien.pdf
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -f ./slides-basics/ltx_folien.pdf ./slides-basics/noanim_ltx_folien.pdf ./slides-advanced/ltx_cmd_folien.pdf ./slides-advanced/noanim_ltx_cmd_folien.pdf
+          git add -f ./latex_folien.pdf ./latex_2_folien.pdf
           git commit -m "Update PDFs by Workflow"
           
       - name: Push changes
