@@ -41,14 +41,14 @@ jobs:
           args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
 
       - name: Compile the advanced slides
-          uses: xu-cheng/latex-action@v2
-          with:
-          working_directory: slides-advanced
-          root_file: |
-              noanim_ltx_cmd_folien.tex
-              ltx_cmd_folien.tex
-          latexmk_shell_escape: true
-          args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
+        uses: xu-cheng/latex-action@v2
+        with:
+        working_directory: slides-advanced
+        root_file: |
+            noanim_ltx_cmd_folien.tex
+            ltx_cmd_folien.tex
+        latexmk_shell_escape: true
+        args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
 
       - name: Commit PDF
         run: |
