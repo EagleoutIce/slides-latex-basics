@@ -1,0 +1,857 @@
+\makeatletter
+\def\input@path{{../sopra-collection/sopra-listings/}}
+\graphicspath{ {./} {./example-media/} }
+\makeatother
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[main=ngerman,english]{babel}
+
+\def\getSopraPackage#1{\usepackage{../sopra-collection/#1/#1}}
+\getSopraPackage{sopra-listings} \getSopraPackage{sopra-tables}
+\usepackage{tikz,tikzducks,tikzsymbols,varwidth,booktabs,microtype,lmodern,multicol}
+
+\solLoadLanguage{bash,latex}
+
+\usetikzlibrary{%
+arrows,automata,calc,intersections,%
+through,decorations.pathreplacing,%
+decorations.pathmorphing,backgrounds,%
+positioning,fit,shapes,shadings,%
+shadows,matrix,scopes,patterns,mindmap,arrows.meta}
+
+% load the beamer-theme
+% \usetheme{lucy}
+\usepackage{../beamer-themes/lucy/beamerthemelucy}
+
+\usepackage{../helper-packages/eagle-beamer-latex}
+\usepackage{../helper-packages/eagle-util}
+\usepackage{../helper-packages/eagle-algorithms}
+
+\newcounter{TSKS}
+\hypersetup{colorlinks=false}
+
+% \def\totalframes{14693}
+\def\Hcolor{csecondary}
+\def\previewColor#1{\emph{#1} \tikz[baseline=-0.6ex]{\draw[fill=#1] circle (4.5pt);}}
+% colorpreview
+
+\RestyleAlgo{plain}
+
+\let\T\texttt
+\def\info#1{\bgroup\scriptsize\textcolor{gray}{(#1)}\egroup}
+
+\AtBeginSection[]
+  {
+     \begin{frame}%<beamer>
+     \frametitle{\secname}
+     \begin{center}
+        \begin{columns}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[currentsection,sectionstyle=show/shaded,subsectionstyle=show/show/hide,sections={1-4}]
+            \end{column}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[currentsection,sectionstyle=show/shaded,subsectionstyle=show/show/hide,sections={5-7}]
+            \end{column}
+        \end{columns}
+     \end{center}
+     \end{frame}
+  }
+
+% Maybe make Latex?
+% yepp xD (980 LoC)
+\title[Latex - Online Tutorium 2]{LaTeX - Kommandos und Layout \\\small Online Tutorium 2}
+\date{1.05.2019}
+\author{Florian Sihler}
+
+\def\gets{:=} % just here, please :D
+\def\abs#1{\left\lvert#1\right\rvert}
+
+\setcounter{tocdepth}{4} % subsubsections in toc
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\ltxpreview{Test}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    Hallo Welt
+\end{document}
+\end{tcboutputlisting}
+
+\section*{Die Themen heute}
+
+\begin{frame}{Die heutigen Themen}
+    \begin{center}
+        \begin{columns}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[hideallsubsections,sections={1-4}]
+            \end{column}
+            \begin{column}{.45\textwidth}
+                \tableofcontents[hideallsubsections,sections={5-7}]
+            \end{column}
+        \end{columns}
+    \end{center}
+\end{frame}
+
+
+\section{Abschnitte und Kapitelübersicht}
+\subsection{Die wichtigsten Gliederungsbefehle}
+\def\pausevoid#1{\pause{}\solGet{command}{\textbackslash #1}}
+
+\ltxpreview{SectionTest}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    \section{Ein Abschnitt}
+    \subsection{Ein Unterabschnitt}
+    Hallo Welt
+    \section{Ein anderer Abschnitt}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[t]{Wie gliedert man ein Dokument?}
+    \begin{itemize}[<+(1)->]
+        \item Gliedern mit (absteigend): \typesetList[pausevoid]{part,chapter,section,subsection,subsubsection,paragraph,subparagraph}.
+        \item \blatex{\\part} und \blatex{\\chapter} gibt es nur in Dokumentklassen wie \emph{report} oder \emph{book}.
+        \item Alle übernehmen als Argument den jeweiligen Titel, also:\pause{} \blatex{\\section\{:lan:Titel:ran:\}}\pause{}
+              {\lstfs{8}\eblLoadLtx{SectionTest}{graphics options={trim=4cm 22cm 8cm 4cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{TocTest}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    \tableofcontents
+    \section{Ein Abschnitt}
+    \subsection{Ein Unterabschnitt}
+    Hallo Welt
+    \section{Ein anderer Abschnitt}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[t]{Gliederungsübersicht}
+    \begin{itemize}[<+(1)->]
+        \item Alle Gliederungspunkte erhält man mit \blatex{\\tableofcontents}.
+        \item Hierzu muss das Dokument zweimal kompiliert werden.\pause{} Warum? Gleich!
+        \item Beispiel:\pause{}
+        {\lstfs{8}\eblLoadLtx{TocTest}{graphics options={trim=3cm 17cm 3cm 3cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\subsection[Exkurs: Wie wird ein Dokument verarbeitet?]{Exkurs: Wie liest \LaTeX}
+\begin{frame}[t]{Exkurs: Wie liest \LaTeX?}
+    \begin{itemize}[<+(1)->]
+        \item \LaTeX{} liest das Dokument einmal von oben nach unten.
+        \item Später auftretende \blatex{\\section}-Befehle gibt es für \blatex{\\tableofcontents} also noch gar nicht.
+        \item Lösung: \LaTeX{} schreibt sich Hilfsdateien (\T{.aux}, \T{.toc}, \T{.lot}, \ldots), die die Daten vorheriger Läufe sammeln.
+        \item Deswegen ist in diesem Fall mehrfaches kompilieren notwendig!
+    \end{itemize}
+\end{frame}
+\subsection{Weitere Feinheiten}
+
+\ltxpreview{TocTestTwo}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    \tableofcontents
+    \section{Ein Abschnitt}
+    \subsection{Ein Unterabschnitt}
+    Hallo Welt
+    \section*{Versteckt!}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[t]{Du siehst mich nicht!}
+    \begin{itemize}[<+(1)->]
+        \item Alle Gliederungsbefehle besitzen eine Variante mit Sternchen (\blatex{\\section*}, \ldots)
+        \item Diese tauchen nicht in der Inhaltsübersicht auf und werden nicht nummeriert!
+        \item Beispiel:\pause{}
+        {\lstfs{8}\eblLoadLtx{TocTestTwo}{graphics options={trim=3cm 18cm 3cm 3cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{TocTestTre}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\begin{document}
+    \tableofcontents
+    \section[Von der Sonne]{Hi}
+    \subsection[Vom Mond!]{Ho}
+    Hallo Welt
+    \section*{Versteckt!}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}[t]{Guten Tag, ich heiße Günther!}
+    \begin{itemize}[<+(1)->]
+        \item Alle Gliederungsbefehle akzeptieren ein optionales Argument in eckigen Klammern.
+        \item Dies ist dann der Bezeichner für \blatex{\\tableofcontents}
+        \item Dann nützlich, wenn Titel sehr lang. Beispiel:\pause{}
+        {\lstfs{8}\eblLoadLtx{TocTestTre}{graphics options={trim=3cm 18cm 3cm 3cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{MkTitle}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\title{Geschichten von Gestern}
+\author{Ich \and Du}
+\date{\today}
+
+\begin{document}
+    \maketitle
+\end{document}
+\end{tcboutputlisting}
+
+\subsection{Dokumenttitel, selbst gemacht}
+\begin{frame}[t]{Spaß mit \T{\textbackslash maketitle}}
+    \begin{itemize}[<+(1)->]
+        \item Mittels \blatex{\\maketitle} kann ein Titel generiert werden
+        \item Dieser benötigt einen Titel (\blatex{\\title}) und kann mit weiteren Befehlen wie \blatex{\\author} gefüttert werden.
+        \item In Befehlen wie \blatex{\\author} können mittels \blatex{\\and} mehrere aufgeführt werden
+        \item Beispiel:\pause{}
+        {\lstfs{8}\eblLoadLtx{MkTitle}{graphics options={trim=6cm 20.5cm 5.5cm 4.5cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\section{Kopf- und Fußzeile}
+\subsection{Übersicht über die Pakete}
+\begin{frame}[t]{Übersicht über die Pakete}
+    \begin{itemize}[<+(1)->]
+        \item In der Regel: \T{scrlayer-scrpage} oder \T{fancyhdr}
+        \item Hinweis: \T{scrpage2} ist seit 2015 veraltet!
+        \item Wenn Koma-Skriptklasse: \T{scrlayer-scrpage}
+        \item Nützlicher Befehl innerhalb:\pause{} \blatex{\\thepage} (aktuelle Seitenzahl)
+        \item Auch nützlich: Das Paket \T{lastpage},\pause{} liefert mit \blatex{\\pageref\{LastPage\}} Seitenzahl der letzten Seite!\pause{} \info{Dies benötigt ebenfalls einen weiteren Kompiliervorgang!}
+        \item Hinweis: \T{memoir}-Klassen machen ihr eigenes Ding\pause{} \Laughey.
+    \end{itemize}
+\end{frame}
+
+
+\subsection[Mit \T{scrlayer-scrpage}]{Mit scrlayer-scrpage}
+\begin{frame}[t]{Die Freuden des Koma-Scripts}
+    \begin{itemize}[<+(1)->]
+        \item Hinweis: Dieses Paket kann vieel mehr, wir schauen uns nur einen Teil an!
+        \item Für doppelseitige (\T{book}, \ldots) Dokumente: Noch mehr Befehle.
+        \item Sonst: \blatex{\\ohead}, \blatex{\\chead}, \blatex{\\ihead} für\pause{} oben-links, oben-mitte und oben-rechts.\pause{} analog \blatex{\\ofoot}, \blatex{\\cfoot}, \blatex{\\ifoot} für unten.
+        \item Löschen bisheriger Einstellung: \blatex{\\clearscrheadfoot}.
+        \item Da \T{scrlayer-scrpage} mit Markern arbeitet, gibt es auch \blatex{\\pagemark} (Seitenzahl) und viele weitere
+        \item Layout wird durch: \blatex{\\pagestyle\{scrheadings\}} erst aktiv!
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{HeadFoot}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{scrlayer-scrpage}
+\ofoot{\pagemark}
+\ifoot{Florian Dieter}
+
+\pagestyle{scrheadings}
+
+\begin{document}
+    \section{Willkommen in Narnia}
+    Hi
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{HeadFoot}{graphics options={trim=3.5cm 3cm 3.5cm 22cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+
+\subsection[Mit \T{fancyhdr}]{Mit fancyhdr}
+\begin{frame}[t]{Die Freuden der transparenten Blätter}
+    \begin{itemize}[<+(1)->]
+        \item Hinweis: Dieses Paket kann vieel mehr, wir schauen uns nur einen Teil an!
+        \item Für doppelseitige (\T{book}, \ldots) Dokumente: Noch mehr Optionen.
+        \item Sonst: \blatex{\\fancyhead} bzw. \blatex{\\fancyfoot}. Erhält in eckigen Klammern ob {\T{L} (links)}, {\T{C} (mittig)} oder {\T{R} (rechts)}.
+        \item Löschen bisheriger Einstellung: \blatex{\\fancyhf}.
+        \item Da auch \T{fancyhdr} mit Markern arbeitet, gibt es auch \blatex{\\leftmark} (oberer Gliederungsname), \blatex{\\rightmark} (untere Gliederungsname) und viele mehr.
+        \item Layout wird durch: \blatex{\\pagestyle\{fancy\}} erst aktiv!
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{HeadFootFancy}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{fancyhdr}
+\fancyhf{}
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{\leftmark}
+
+\pagestyle{fancy}
+
+\begin{document}
+    \section{Willkommen in Narnia}
+    Hi
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{HeadFootFancy}{graphics options={trim=3.5cm 3cm 3.5cm 22cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+
+\section{Geometrie der Seite}
+\subsection[Mädchen für alles: Das \T{geometry}-Paket]{Das geometry-Paket}
+\begin{frame}[t]{Mädchen für alles: Das \T{geometry}-Paket}
+    \begin{itemize}[<+(1)->]
+        \item Alle folgenden Argumente lassen sich dem Paket direkt übergeben.
+        \item Die meisten lassen sich danach mittels \blatex{\\newgeometry} anwenden.\pause{} \info{Hiervon ausgenommen sind Befehle die das Papierformat verhunzen etc.}
+        \item Eine gesamte Liste aller Optionen liefert die tolle Dokumentation.\pause{} \info{\url{https://ftp.uni-erlangen.de/ctan/macros/latex/contrib/geometry/geometry.pdf}}
+        \item Die Auswahl des Papierformats mittels: \T{a0paper}, \ldots, \T{a4paper},\ldots \T{a6paper},\pause{} analog die anderen Formate \T{b4paper}, \T{c3paper}, \ldots, \T{letterpaper}, \T{legalpaper}, \ldots.
+        \item Grenzen nach außen: \typesetList[T]{top,left,right,bottom},\pause{} oder: Definition der Textbreite mittels \typesetList[T]{textheight,textwidth}.\pause{} \info{Es gibt noch andere Möglichkeiten.}
+        \item Auch möglich:\pause{} Kombination mit \T{total=\{w,h\}}\pause{} welches die effektive Text-Dimensionen definiert.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{Geometry}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage[a4paper, left=10cm,
+    right=8cm]{geometry}
+
+\begin{document}
+    Blah blah blah, ich bin langer Text.
+    Du du du, Ich füll die Seite jetzt!
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{Geometry}{graphics options={trim=0cm 19cm 0cm 0cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Hinweis: Hier wurde nur die Höhe der Seite beschnitten und die Seite skaliert.
+    \end{itemize}
+\end{frame}
+
+\subsection{Margins und marginpar}
+\begin{frame}[t]{Das \T{geometry}-Paket}
+    \begin{itemize}[<+(1)->]
+        \item Margins erlauben Randkommentare.
+        \item Beispielhaft durch \blatex{\\marginpar}.
+        \item Aktiviert durch \T{includemp}.\pause{} \info{\textbf{include} \textbf{m}argin\textbf{p}}
+        \item Breite durch \T{marginparwidth}, Abstand durch \T{marginparsep}.
+        \item Kann auch für den zweiseitigen Druck angepasst werden.\pause{} \info{Beachte hierfür auch das optionale Argument.}
+        \item \textit{Hinweis: } Im folgenden Dokument verwende ich \T{blindtext}. Es handelt sich um Platzhalter-Text
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{Margins}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage{blindtext}
+\usepackage[a4paper,
+    includemp]{geometry}
+
+\begin{document}
+    \marginpar{Hallo Welt, wie gehts?}
+    \blindtext
+    \marginpar{Sonnenschein}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{Margins}{graphics options={trim=0cm 19cm 0cm 0cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+\section{Befehle in Latex}
+
+\subsection{Exkurs: Wie funktioniert ein Befehl?}
+\begin{frame}[t]{Exkurs: Wie funktioniert ein Befehl?}
+    \begin{itemize}[<+(1)->]
+        \item \LaTeX{} unterteilt Zeichen in \say{aktive} und \say{andere}.\pause{} \info{und noch andere aber egal \Winkey}
+        \item Liest es ein Backslash \say{\blatex{\\}},\pause{} so wechselt es in den Befehlsmodus und liest,\pause{} bis ein Zeichen kommt, das (Faustregel) kein Buchstabe ist.
+        \item Danach sieht \LaTeX{}/\TeX{} nach, welche Signatur der Befehl besitzt.
+        \item Beispiel: \pause{} \[
+            \underbrace{\text{\blatex{\\textit}}}_{\text{Befehl}}\underbrace{\text{\blatex{\{Hallo Welt\}}}\!}_{\text{Erstes Argument}}
+        \]
+        \item Liest Latex eine geschwungene Klammer (Gruppe genannt),\pause{} so wird bis zur schließenden Klammer gelesen.
+        \item Sonst wird das erste nicht-Leerfeld genommen.
+        \item In Wirklichkeit noch aufwändiger \Laughey.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Exkurs: Wie funktioniert ein Befehl?}
+    \begin{itemize}[<+(1)->]
+        \item \TeX{} expandiert dann den Befehl.
+        \item Das bedeutet, er wird durch seine Definition ersetzt.
+        \item Es gibt \TeX{}-Befehle wie \blatex{\\uppercase}, die nicht expandieren können!
+        \item Genaueres gleich \Smiley.
+    \end{itemize}
+\end{frame}
+
+\subsection{\blatex{\\newcommand} und \blatex{\\renewcommand}}
+\begin{frame}[fragile,t]{Einen Befehl definieren}
+    \begin{itemize}[<+(1)->]
+        \item Normalerweise werden sie in der Präambel definiert.\pause{} \info{Dies muss aber so nicht sein.}
+        \item Hierfür gibt es \blatex{\\newcommand} und \blatex{\\renewcommand}.\pause{} Letzterer wird dann verwendet, wenn ein Befehl verändert werden soll.
+        \item Wir definieren:\pause{}
+\begin{latex*}[morekeywords={[5]{\\Dieter}}]
+\newcommand{\Dieter}{Ich heiße Dieter}
+\end{latex*}
+        \pause{}Also einen Befehl mit dem Namen \say{Dieter}, der zu \say{Ich heiße Dieter} expandiert.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{CmdNewCommand}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\Dieter}{Ich heiße Dieter}
+
+\begin{document}
+    Hallo, ich bin \Dieter und mag das.
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewCommand}{graphics options={trim=3.5cm 22cm 5cm 3cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Hinweis: Das Leerfeld wird verschluckt, da \LaTeX{} immer einmal nach Argumenten sucht!
+        \item Wir schreiben deswegen: \blatex[morekeywords={[5]{\\Dieter}}]{:ldots:\\Dieter\{\} :ldots:}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Befehle mit Argumenten}
+    \begin{itemize}[<+(1)->]
+        \item Wir möchten natürlich auch Befehle mit Argumenten. Hierzu:\pause
+\begin{latex*}[morekeywords={[5]{\\Dieter}}]
+\newcommand{\:lan:Name:ran:}[:lan:Anzahl:ran:]{:lan:Rumpf:ran:}
+\end{latex*}
+        \item Die Argumente werden mit \blatex{#:lan:Nummer:ran:} von eins an nummeriert.
+        \item Wir definieren:\pause
+\begin{latex*}[morekeywords={[5]{\\Dieter}}]
+\newcommand{\Dieter}[2]%
+    {Ich heiße #1, Ich bin \(#2\) \textit{Jahre} alt.}
+\end{latex*}
+        \item \textit{Hinweis: } die neue Zeile ist nur zur Übersicht!
+        \item Wir können die Befehle also auch verschachteln.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{CmdNewCommandArgs}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\Dieter}[2]%
+    {Ich heiße #1, Ich bin \(#2\) \textit{Jahre} alt.}
+
+\begin{document}
+    Hallo, \Dieter{Wolfgang}{200} Das ist super!
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Noch ein Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewCommandArgs}{graphics options={trim=3.5cm 22cm 5cm 3cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+
+\ltxpreview{CmdNewCommandBraces}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage{xcolor}
+\newcommand{\borange}[1]{\textcolor{orange}{(}#1\textcolor{orange}{)}}
+
+\begin{document}
+    Hallo, ich bin \borange{wunderbar} und mag das.
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Ein (sinnvolleres) Beispiel}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewCommandBraces}{graphics options={trim=3.5cm 22cm 5cm 3cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Erspart schon einmal Schreibarbeit \Laughey.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{CmdNewCommandNestedBraces}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{xcolor}
+\newcommand{\bcolor}[2]{\textcolor{#2}{(}#1\textcolor{#2}{)}}
+
+\newcommand{\borange}[1]
+    {\bcolor{#1}{orange}}
+\newcommand{\bteal}[1]
+    {\bcolor{#1}{teal}}
+\newcommand{\bred}[1]{\bcolor{#1}{red}}
+
+\begin{document}
+    Hallo, ich \bteal{bin \borange{wunderbar} und} mag das.
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel zu Verschachtelungen}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewCommandNestedBraces}{graphics options={trim=3.5cm 22cm 5cm 3cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Solangsam wird die Faulheit eines Programmierers deutlich \Laughey.
+    \end{itemize}
+\end{frame}
+
+\subsection{Optionale Argumente}
+\begin{frame}[fragile,t]{Optionale Argumente}
+    \begin{itemize}[<+(1)->]
+        \item Manchmal muss ein Befehl nur manchmal ein Argument erhalten.
+        \item Optionale Argumente werden in Latex in der Regel mittels eckiger Klammern eingeschlossen.
+        \item Bei \blatex{\\newcommand} setzen wir hierzu einfach nochmal eine eckige Klammer dahinter\pause{} und schreiben dort hin, was das erste Argument sein soll,\pause{} wenn es nicht angegeben wird.
+        \item Beispiel:\pause
+\begin{latex*}[morekeywords={[5]{\\Dieter}}]
+\newcommand{\Dieter}[3][Dieter]%
+    {Ich heiße #1, bin #2 Jahre alt und #3.}
+\end{latex*}
+    \end{itemize}
+\end{frame}
+
+
+\ltxpreview{CmdNewCommandOptionals}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\Dieter}[3][Dieter]{Ich heiße #1, bin #2 Jahre alt und #3.}
+
+\begin{document}
+    Hallo, \Dieter{32}{cool} \\
+    Hallo, \Dieter[Jens]{5}{eine Ente}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel zu optionalen Argumenten}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewCommandOptionals}{graphics options={trim=3.5cm 22cm 5cm 3cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item So funktioniert zum Beispiel \blatex{\\usepackage}.
+    \end{itemize}
+\end{frame}
+
+
+\subsection{Tipps und Tricks}
+\begin{frame}[t]{Ein paar Tipps}
+    \begin{itemize}[<+(1)->]
+        \item Befehle, deren Argumente nur aus wenigen Worten oder gar einem Zeichen bestehen,\pause{} (oder gar keine Befehle wollen),\pause{} sollten mit einem Sternchen definiert werden. Also: \blatex{\\newcommand*} beziehungsweise \blatex{\\renewcommand*}.\pause{} Das hilft bei der Fehlersuche!\pause{} \info{Stichwort: \blatex{\\long}}
+        \item Man muss es mit Befehlen nicht übertreiben!\pause{} Für die meisten nützlichen Dinge gibt es bereits ein Paket.
+        \item Für viele Fälle gibt es vermutlich auch noch andere Mechaniken\ldots
+    \end{itemize}
+\end{frame}
+
+\subsection{Umgebungen in Latex}
+\begin{frame}[t,fragile]{Definieren einer Umgebung}
+    \begin{itemize}[<+(1)->]
+        \item \blatex{\\newenvironment} funktioniert analog zu \blatex{\\newcommand}, \pause{} \blatex{\\renewenvironment} analog zu \blatex{\\renewcommand}.
+        \item Die Argumentdefinition verläuft analog.
+        \item Einziger Unterschied:\pause{} Rumpf gliedert sich in zwei Teile,\pause{} \say{am Anfang} und \say{am Ende}.
+        \item \textit{Und:} Die Definition wird ohne Backslash angeführt!
+        \item Beispiel:\pause{}
+\begin{latex*}[morekeywords={[3]{episch}}]
+\newenvironment{episch}[1][Titel:]%
+    {\textit{#1}\\}% Start
+    {Das wars!}% Ende
+\end{latex*}
+    \end{itemize}
+\end{frame}
+
+
+\ltxpreview{CmdNewEnvirons}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\newenvironment{episch}[1][Titel:]%
+    {\textit{#1}\\}% Start
+    {Das wars!}% Ende
+
+\begin{document}
+    \begin{episch}
+        Ich bin eine Umgebung!
+    \end{episch} \\
+    \begin{episch}[Sonnenschein]
+        Bin ich nicht toll?
+    \end{episch}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel zu Umgebungen}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{CmdNewEnvirons}{graphics options={trim=3.5cm 21cm 5cm 4cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+
+\section{Hyperlinks und Metadaten}
+\subsection{Ich linke also bin ich!}
+\begin{frame}[t,fragile]{Anker und Sprünge}
+    \begin{itemize}[<+(1)->]
+        \item Ein Paket für alles: \T{hyperref}.\pause{} Das bloße einbinden macht den \blatex{\\tableofcontents} anklickbar.
+        \item Im Dokument: \blatex{\\label\{:lan:AnkerName:ran:\}} um einen Sprunganker/Sprungmarker zu setzen.
+        \item Dann \blatex{\\hyperref[:lan:AnkerName:ran:]\{:lan:Text:ran:\}}.\pause{} Dies macht \say{Text} anklickbar.\pause{} Springt dann zu \blatex{:lan:AnkerName:ran:}.
+        \item Es gibt auch noch \blatex{\\pageref\{:lan:AnkerName:ran:\}} dies expandiert zur Seitenzahl des Ziels und\pause{} \blatex{\\autoref\{:lan:AnkerName:ran:\}} versucht \say{sinnvoll} Bezeichner dazu zu setzen.\pause{} \info{Auch einen Blick wert: \blatex{\\ref}}
+        \item Es gibt viele weitere Pakete, die die Funktionalität erweitern.
+        \item Sollte das letzte Paket sein, das geladen wird (überschreibt andere Befehle).
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{ExampleHyperLinks}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{hyperref}
+
+\begin{document}
+    \label{txt:sun}Hallo Welt ich mag die Sonne!\\
+    \hyperref[txt:sun]{Wirklich sehr!}
+    (\pageref{txt:sun})
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel zu Links}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{ExampleHyperLinks}{graphics options={trim=3.5cm 21cm 5cm 4cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Es empfiehlt sich (wie \T{txt:}) die Anker thematisch zu kategorisieren.
+        \item \textit{Hinweis:} Hier nicht optisch dargestellt, da es standardmäßig am PDF-Viewer liegt.
+    \end{itemize}
+\end{frame}
+
+\subsection{Farbige Konfiguration}
+\begin{frame}[t,fragile]{Ein Kessel buntes}
+    \begin{itemize}[<+(1)->]
+        \item Alle Optionen mittels \blatex{\\hypersetup}.
+        \item Die wichtigsten: \typesetList[T]{colorlinks,breaklinks,linkcolor,citecolor,filecolor,urlcolor}.
+        \item Man kann auch URLs mittels \blatex{\\url} angeben, und vieles mehr \Laughey.
+        \item \textit{Hinweis: \T{colorlinks} ist standardmäßig aktiv, im Kontext dieser Präsentation aber von mir abgeschaltet.}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{ExampleHyperLinksWColor}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true,
+    linkcolor=teal,urlcolor=orange}
+
+\begin{document}
+    \label{txt:sun}Hallo Welt\\
+    \hyperref[txt:sun]{Wirklich sehr!}
+    (\pageref{txt:sun})
+    \url{https://moodle.uni-ulm.de}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel zu farbigen Links}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{ExampleHyperLinksWColor}{graphics options={trim=3.5cm 21cm 5cm 4cm, clip}}{before lower={\pause}}}
+\end{frame}
+
+
+\subsection{Metadaten setzen}
+\begin{frame}[t,fragile]{Na klar ist das von mir}
+    \begin{itemize}[<+(1)->]
+        \item Alle Optionen wieder mittels \blatex{\\hypersetup}.
+        \item Wir können weiter setzen: \typesetList[T]{pdftitle,pdfauthor,pdfsubject,pdfcreator,pdflang}.
+        \item Dies setzt dann die Metadaten des Dokuments.
+        \item Beispiel:\pause{}
+\begin{latex*}
+\hypersetup{pdftitle=Geschichten von Gestern, pdfauthor=Ich, pdfcreator=pdflatex}
+\end{latex*}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Na klar ist das von mir}
+    \begin{itemize}[<+->]
+        \item Beispiel:
+\begin{latex*}
+\hypersetup{pdftitle=Geschichten von Gestern, pdfauthor=Ich, pdfcreator=pdflatex}
+\end{latex*}
+        \item Ergibt: \pause{} \info{Oh mein Gott ein Foto!!!!!!}\pause{}\begin{center}
+            \includegraphics[height=0.4\textheight]{metadata/metadata.png}
+        \end{center}
+    \end{itemize}
+\end{frame}
+
+
+\section{Grafiken und Listen}
+\subsection{Grafiken einbinden}
+\begin{frame}[t,fragile]{Ist es nicht wunderschön?}
+    \begin{itemize}[<+(1)->]
+        \item Wichtiges Paket: \T{graphicx}.
+        \item Einzig wichtiger Befehl: \blatex{\\includegraphics\{:lan:Datei:ran:\}}
+        \item Kann Optionen wie \T{width} und \T{height} annehmen:\pause{} \blatex{\\includegraphics[:lan:Optionen:ran:]\{:lan:Datei:ran:\}}
+        \item Die Datei kann ohne Endung angegeben werden.\pause{} \info{Die Angabe kann manchmal zu Problemen führen!}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{IncludeGraphics}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\begin{document}
+    Ein wundervolles Foto:\\
+    \includegraphics[width=5cm]{me}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel mit Bildern}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{IncludeGraphics}{graphics options={trim=3.5cm 18cm 9cm 4cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item Nützlich: \blatex{\\linewidth} entspricht der Breite einer Zeile.
+        \item So kann mit \blatex{0.5\\linewidth} die Breite einer halben Zeile definiert werden.
+    \end{itemize}
+\end{frame}
+
+\subsection{Untertitel für Bilder (und Tabellen)}
+\begin{frame}[t,fragile]{Untertitel - Was soll das sein?}
+    \begin{itemize}[<+(1)->]
+        \item Wichtige Umgebung: \blatex{figure}.\pause{} \info{Komplett analog: \blatex{table} für Tabellen}
+        \item Erlaubt innerhalb mittels \blatex{\\caption} Benennung der Grafik.
+        \item Optionales Argument, erlaubt Positionierungs-Wünsche (\T{t} für \emph{top}, \T{b} für \emph{bottom}, \T{h} für \emph{here}, \ldots).\pause{} Auch mehrere Angaben möglich (und üblich).
+        \item Man kann zu Beginn \blatex{\\centering} verwenden um die Grafik zu zentrieren.
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{IncludeGraphicsWFigure}
+\begin{tcboutputlisting}
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\begin{document}
+    Ein wundervolles Foto:
+    \begin{figure}[tbh]
+        \centering
+        \includegraphics[width=5cm]{me}
+        \caption{Das bin ich.}
+    \end{figure}
+\end{document}
+\end{tcboutputlisting}
+
+\begin{frame}{Beispiel mit Bildunterschrift}
+    \pause{}
+    {\lstfs{8}\eblLoadLtx{IncludeGraphicsWFigure}{graphics options={trim=3.5cm 16cm 3.5cm 4cm, clip}}{before lower={\pause}}}
+    \begin{itemize}[<+(2)->]
+        \item \textit{Hinweis: } Die Benennung kann mit dem Paket \T{caption} geändert werden.
+        \item Auch nützlich: Das Paket \T{wrapfig}.\pause{} \info{Ermöglicht Grafiken und Tabellen im Textfluss}
+    \end{itemize}
+\end{frame}
+
+\ltxpreview{IncludeGraphicsListOf}
+\begin{tcboutputlisting}
+\documentclass{article}
+\usepackage{graphicx}
+\begin{document}
+    \listoffigures
+
+    \noindent Ein wundervolles Foto:
+    \begin{figure}[tbh]
+        \centering
+        \includegraphics[width=5cm]{me}
+        \caption{Das bin ich.}
+    \end{figure}
+\end{document}
+\end{tcboutputlisting}
+
+\subsection{Grafiken und Tabellen auflisten}
+\begin{frame}[t,fragile]{Und was waren jetzt noch mal alle Fotos?}
+    \begin{itemize}[<+(1)->]
+        \item Alle Grafiken/Tabellen\pause{} (die durch \blatex{figure}/\blatex{table} mittels \blatex{\\caption} benannt wurden)\pause{} können mittels \blatex{\\listoffigures}/\blatex{\\listoftables} aufgelistet werden.
+        \item Beispiel\pause{} \info{\blatex{\\noindent} entfernt den horizontalen Abstand}:\pause
+        {\lstfs{7}\eblLoadLtx{IncludeGraphicsListOf}{graphics options={trim=3.5cm 15cm 3.5cm 4cm, clip}}{before lower={\pause}}}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Informationen}
+    \begin{itemize}[<+(1)->]
+        \item Dies benötigt, analog zu \blatex{\\tableofcontents} wieder zwei Durchläufe.
+        \item Info: Wie \blatex{\\section} etc. kann \blatex{\\caption} mit einem optionalen Argument den Titel in der LOF (\textbf{L}ist \textbf{o}f \textbf{F}igures) ändern.
+        \item \blatex{figure} und \blatex{table} erzeugen sogenannte \say{Floats}.\pause{} Sie können mittels dem Paket \T{float} durch die Platzierungsoption \say{\T{H}} an Ort und stelle forciert werden.
+        \item Das Paket \T{newfloat} erlaubt durch \blatex{\\DeclareFloatingEnvironment} die Definition einer eigenen \emph{floating} Umgebungen.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \begin{center}
+        \begin{tikzpicture}[scale=2.25, every node/.style={transform shape}]
+            \duck[darthvader=black!30!gray,torch=black!30!gray,prison=gray,bubblecolor=white!95!yellow,jacket=gray!90!black]
+            \node at(-2,0.75) {\tiny\LaTeX{} ist schon toll\ldots};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\section*{Aussicht}
+\begin{frame}[t,fragile]{Aussicht: Was noch geht}
+    \begin{itemize}[<+(1)->]
+        \item Grafiken (so wie Enten) und eigentlich alles mittels \T{tikz}.
+        \item Bibliographien, Glossare, Indizes
+        \item Tolle Boxen/Theoreme
+        \item Mit \LaTeX3 (\T{expl3}) noch viel mehr.
+        \item Zähler (\blatex{\\newcounter}), Längen (\blatex{\\newlength}, \blatex{\\newdimen})
+        \item Bedingungen (\blatex{\\if}, \blatex{\\ifx}, \blatex{\\ifnum}, \blatex{\\ifthenelse}, \ldots)
+        \item Berechnungen (\blatex{\\pgfmathparse}, \ldots)
+        \item Etliches\ldots (Befehle wie \blatex{\\def}, \blatex{\\hfill}, \blatex{\\vfill}, \ldots)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Einige Beispiele}
+    \parallelcontent{\centering \includegraphics[width=0.6\linewidth]{Application}}{\centering\includegraphics[width=0.75\linewidth]{titleimagePVS}}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Einige Beispiele}
+    \begin{center}
+        \includegraphics[width=0.75\linewidth]{titleimageEIDIF}
+    \end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]{Einige Beispiele}
+    \parallelcontent{\centering \includegraphics[width=0.6\linewidth]{titleimageSOFTI}}{\centering\includegraphics[width=0.75\linewidth]{titleimageANA2}}
+\end{frame}
+
+\begin{frame}[c]{Einige Beispiele}
+    \begin{center}
+        \includegraphics[width=0.75\linewidth]{titleimageGDRN}
+    \end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]{Einige Beispiele}
+    \begin{center}
+        \parallelcontent{\centering \includegraphics[width=0.75\linewidth]{UMLStateDiagramExample-pdf}}{
+            \centering \includegraphics[width=0.55\linewidth]{std-dokument.png} 
+        }
+    \end{center}
+\end{frame}
+
+% TODO: Anbieten Latex: Glossar, Bibtex, Index etc... und TikZ
+
+%TODO: BibTex, Glossaries, Makeindex....
+%TODO: ganz viele Beispiele :D
+%TODO: Tcolorbox
+\end{document}

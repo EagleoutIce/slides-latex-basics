@@ -43,9 +43,15 @@
 \def\previewColor#1{\emph{#1} \tikz[baseline=-0.6ex]{\draw[fill=#1] circle (4.5pt);}}
 % colorpreview
 
-
 \let\T\texttt
 \def\info#1{\bgroup\scriptsize\textcolor{gray}{(#1)}\egroup}
 \def\say#1{\glqq{#1}\grqq{}}
+
+\long\def\parallelcontent#1#2{
+  \begin{columns}
+    \column{0.48\textwidth} #1
+    \column{0.48\textwidth} #2
+  \end{columns}
+}
 
 \endinput
