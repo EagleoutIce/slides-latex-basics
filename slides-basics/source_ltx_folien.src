@@ -713,37 +713,6 @@ Sei \(x \in \mathbb{N}\) sowie
 \section{Source Code}
 \begin{frame}[fragile]{}{}
 \begin{center}
-% \makeatletter
-% \definecolor{matrixgreen}{RGB}{29, 195, 37} %rgb(29, 195, 37)
-% \definecolor{matrixgreenhl}{RGB}{145, 255, 20} %rgb(145, 255, 20)
-
-
-% \begin{tikzpicture}[scale=1.75,every node/.style={transform shape}]
-%     \foreach \layer/\scalefactor/\stepfirst in {-.75/0.25/-0.94,-.25/0.25/-0.89,0/0.6/-0.8}{
-%         \foreach \col in {-1,\stepfirst,...,3.25}{
-%             \pgfmathsetmacro\dodraw{int(3.2*abs(rand))}
-%             \pgfmathsetmacro\xoff{0.25*(1+\stepfirst)*rand}
-%             \ifnum\dodraw>0
-%             \foreach[count=\linegrad] \line in {3,2.85,...,0}{
-%                 \pgfmathsetmacro\yoff{0.25*(1+\stepfirst)*rand}
-%                 \pgfmathsetmacro\rndsymb{int(int(8*abs(rand))+1)}
-%                 \pgfmathsetmacro\shading{(100-15*\linegrad)/100}
-%                 \pgfmathsetmacro\doydraw{int(int(30-\linegrad)*abs(rand))}
-%                 \ifnum\doydraw>1
-%                     \ifnum\linegrad=21\relax% last
-%                         \def\nodetarcol{matrixgreenhl} \else
-%                         \def\nodetarcol{matrixgreen} %
-%                     \fi
-%                 \else\def\nodetarcol{matrixgreenhl}\breakforeach\fi%force last
-%                 \node[\nodetarcol] at(\col+\xoff,\line-\yoff,\layer) {\scalebox{\scalefactor}{\RndChinese{\rndsymb}}};
-%             }
-%             \fi
-%         }
-%     }
-%     \duck[sunglasses=black,jacket=black,parting=black]
-%     \node[below] at(1,-0.5) {$\prod\forall\top\mathbb{H}\varepsilon$};
-% \end{tikzpicture}
-% \makeatother
 \includegraphics{matrixduck/mduck.pdf}
 \end{center}
 \end{frame}
