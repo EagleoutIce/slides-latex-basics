@@ -794,7 +794,7 @@ public static void
 \end{lstlisting}
 \end{slatex}
 \end{minipage}\hfill\begin{minipage}{0.425\linewidth}
-\begin{plainvoid}[language=java,style=,basicstyle={\scriptsize}]
+\begin{plainvoid}[language=java,style=,basicstyle={\ttfamily\scriptsize}]
 public static void
         main(String[] args){
     System.out.println("Hi");
