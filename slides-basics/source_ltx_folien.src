@@ -599,7 +599,7 @@ Sei \(x \in \mathbb{N}\) sowie
 \end{document}
 \end{tcboutputlisting}
 
-\def\pausevoidcmd#1{\pause{}\solGet{keywordB}{\textbackslash#1}}
+\def\pausevoidcmd#1{\pause{}\solGet{command}{\textbackslash#1}}
 \begin{frame}[fragile,t]{Auflistungen - Bonus: \T{enumitem}}
     \begin{itemize}[<+(1)->]
         \item Das Setzen von \T{label} (bei \blatex{\\setlist}) erlaubt anstelle von \blatex{\\alph*} andere \say{Einstellungen} für den Iterator: \typesetList[pausevoidcmd]{alph*,Alph*,arabic*,Roman*,roman*}.\pause{} \info{Hierfür und für andere Einstellungen: Dokumentation lesen/Internet fragen/Rum-Probieren/\ldots!}
@@ -1058,7 +1058,7 @@ public static void
 
 \begin{frame}[fragile,t]{Pseudocode - Kommentare und Kleinigkeiten}
     \begin{itemize}[<+(1)->]
-        \item Wenn kein Semikolon ausgegeben werden soll (bei \blatex{\\;}) einfach: \solGet{keywordB}{\textbackslash DontPrintSemicolon} zu Anfang des Codes.
+        \item Wenn kein Semikolon ausgegeben werden soll (bei \blatex{\\;}) einfach: \solGet{command}{\textbackslash DontPrintSemicolon} zu Anfang des Codes.
         \item Kommentare können mittels \blatex{\\tcc} (\T{C}-Style) oder \blatex{\\tcp} (\T{C++}-Style) gesetzt werden.
         \item Beispiel: \pause{}\\\lstfs{7}
         \begin{minipage}{0.5\linewidth}
