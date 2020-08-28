@@ -253,7 +253,7 @@ Hallo \[42 + 3 = 45\]
 %% TODO: Current point
 \begin{frame}[fragile,t]{Mathe - Grundlegende Befehle}{}
     \begin{itemize}[<+(1)->]
-        \item Viele Operatoren sind direkt über die Tastatur erreichbar (\T{+, -, *, <, >}) und können Problemlos verwendet werden.
+        \item Viele Operatoren sind direkt über die Tastatur erreichbar (\T{+, -, *, <, >}) und können problemlos verwendet werden.
         \item Griechische Buchstaben:\pause{} \typesetList[CommandMathPreview]{alpha,beta,gamma}, \ldots{} sowie\pause{} \typesetList[CommandMathPreview]{Gamma,Omega,Pi}, \ldots
         \item Operatoren wie \typesetList[CommandMathPreview]{sin,cos,tan},\pause{} \blatex{\\(\\exp\\)} (\(\exp\)) oder \blatex{\\(\\lim\\)} (\(\lim\)), \ldots
         \item Auch nützlich:\pause{} \typesetList[CommandMathPreview]{cdot,pm,sum,prod,to,infty,int,neq,mapsto,leq,geq}.
@@ -876,7 +876,7 @@ public static void
 }
 \end{plainvoid}
 \end{minipage}
-    \item Einziges Problem was übrig ist: Umlaute erzeugen einen Fehler!
+    \item Einziges verbleibendes Problem: Umlaute erzeugen einen Fehler!
     \end{itemize}
 \end{frame}
 
@@ -927,7 +927,7 @@ public static void
 \subsection{Pseudocode}
 \begin{frame}[fragile,t]{Pseudocode - Das Paket der Wahl}
     \begin{itemize}[<+(1)->]
-        \item Ich verwende hier \T{algorithm2e}.\pause{} Das Ergebnis kann optisch (leicht) abweichen (einfach Dokumentation anschaun')
+        \item Ich verwende hier \T{\href{https://www.ctan.org/pkg/algorithm2e}{algorithm2e}}.\pause{} Das Ergebnis kann optisch (leicht) abweichen (einfach Dokumentation anschaun')
         \item Wir erhalten (unter anderem) die Umgebung \blatex{algorithm}.
         \item Beispiel:\pause{}\\
         \begin{minipage}{0.5\linewidth}
