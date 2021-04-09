@@ -15,12 +15,14 @@ jobs:
         uses: actions/checkout@v2
         with:
             lfs: true
-  
+      - name: Install poppler utils
+        run: |
+          sudo apt install poppler-utils
       - name: Checkout submodules
         uses: textbook/git-checkout-submodule-action@master
         with:
             remote: true
-    
+
       - name: Compile the matrix duck
         uses: xu-cheng/latex-action@v2
         with:
@@ -45,16 +47,19 @@ jobs:
               noanim_ltx_cmd_folien.tex
           latexmk_shell_escape: true
           args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e  '$max_repeat=2' -f"
-
-      - name: Commit PDF
+      - name: Generated previews
         run: |
           cp ./slides-basics/noanim_ltx_folien.pdf ./latex_folien.pdf
           cp ./slides-advanced/noanim_ltx_cmd_folien.pdf ./latex_2_folien.pdf
+          pdftoppm -png -f 1 -l 1 latex_folien.pdf preview
+          pdftoppm -png -f 1 -l 1 latex_2_folien.pdf preview_2
+      - name: Commit PDF
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -f ./latex_folien.pdf ./latex_2_folien.pdf
+          git add -f ./latex_folien.pdf ./latex_2_folien.pdf "preview-1.png" "preview_2-1.png"
           git commit -m "Update PDFs by Workflow"
-          
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
