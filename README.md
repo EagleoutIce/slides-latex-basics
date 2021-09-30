@@ -5,5 +5,5 @@ LaTeX Codes for the latex-basic (bonus) slides i've created.
 
 Die Foliensätze befinden sich hier:
 
-1. [Foliensatz 1](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/latex_folien.pdf) ([Animiert](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/anim_latex_folien.pdf).).
-2. [Foliensatz 2](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/latex_2_folien.pdf) ([Animiert](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/anim_latex_2_folien.pdf).).
+1. [Foliensatz 1](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/latex_folien.pdf) ([Animiert](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/anim_latex_folien.pdf)).
+2. [Foliensatz 2](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/latex_2_folien.pdf) ([Animiert](https://media.githubusercontent.com/media/EagleoutIce/slides-latex-basics/gh-pages/anim_latex_2_folien.pdf)).
