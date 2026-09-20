@@ -6,65 +6,54 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: write
+
+env:
+  # latexmk is driven the same way here as locally, so a green build means a
+  # green build on a developer machine too.
+  LATEXMK_ARGS: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape -e '$max_repeat=2' -f"
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-            lfs: true
+          submodules: recursive
+
       - name: Install poppler utils
         run: |
-          sudo apt install poppler-utils
-      - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@master
-        with:
-            remote: true
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends poppler-utils
 
+      - name: Set up TeX Live
+        uses: TeX-Live/setup-texlive-action@v4
+        with:
+          package-file: .github/tl_packages
+
+      # The basic slides \includegraphics this file, so it has to exist first.
       - name: Compile the matrix duck
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: slides-basics/matrixduck
-          root_file: mduck.tex
-
+        working-directory: slides-basics/matrixduck
+        run: latexmk ${{ env.LATEXMK_ARGS }} mduck.tex
 
       - name: Compile the basic slides
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: slides-basics
-          root_file: |
-            noanim_ltx_folien.tex
-          latexmk_shell_escape: true
-          args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
+        working-directory: slides-basics
+        run: latexmk ${{ env.LATEXMK_ARGS }} noanim_ltx_folien.tex
 
       - name: Compile the basic slides (anim)
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: slides-basics
-          root_file: |
-            ltx_folien.tex
-          latexmk_shell_escape: true
-          args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e '$max_repeat=2' -f"
+        working-directory: slides-basics
+        run: latexmk ${{ env.LATEXMK_ARGS }} ltx_folien.tex
 
       - name: Compile the advanced slides
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: slides-advanced
-          root_file: |
-              noanim_ltx_cmd_folien.tex
-          latexmk_shell_escape: true
-          args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e  '$max_repeat=2' -f"
+        working-directory: slides-advanced
+        run: latexmk ${{ env.LATEXMK_ARGS }} noanim_ltx_cmd_folien.tex
 
       - name: Compile the advanced slides (anim)
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: slides-advanced
-          root_file: |
-              ltx_cmd_folien.tex
-          latexmk_shell_escape: true
-          args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -e  '$max_repeat=2' -f"
+        working-directory: slides-advanced
+        run: latexmk ${{ env.LATEXMK_ARGS }} ltx_cmd_folien.tex
 
       - name: Generate previews
         run: |
@@ -74,17 +63,35 @@ jobs:
           cp ./slides-advanced/ltx_cmd_folien.pdf ./anim_latex_2_folien.pdf
           pdftoppm -png -f 1 -l 1 ./latex_folien.pdf preview
           pdftoppm -png -f 1 -l 1 ./latex_2_folien.pdf preview_2
-      - name: Commit PDF
+
+      - name: Upload slides as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slides
+          path: |
+            latex_folien.pdf
+            latex_2_folien.pdf
+            anim_latex_folien.pdf
+            anim_latex_2_folien.pdf
+            preview-01.png
+            preview_2-01.png
+
+      # gh-pages holds nothing but the rendered output, so it is rebuilt as a
+      # single orphan commit instead of carrying the source history along.
+      - name: Publish to gh-pages
+        if: github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -f ./latex_folien.pdf ./latex_2_folien.pdf ./anim_latex_folien.pdf ./anim_latex_2_folien.pdf ./preview-01.png ./preview_2-01.png
+          git checkout --orphan gh-pages-build
+          git rm -rq --cached .
+          git add -f \
+            latex_folien.pdf latex_2_folien.pdf \
+            anim_latex_folien.pdf anim_latex_2_folien.pdf \
+            preview-01.png preview_2-01.png
           git commit -m "Update PDFs by Workflow"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: "gh-pages"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
-
+          git push --force \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            HEAD:gh-pages
