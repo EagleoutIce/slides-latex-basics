@@ -274,3 +274,6 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# Source media: checked into the repository, not build output.
+!slides-advanced/example-media/*.pdf
