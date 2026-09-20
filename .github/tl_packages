@@ -4,6 +4,13 @@
 # local build; the extras below are the ones that only the shell-escape
 # sub-compiles or the format build need. Keep it in sync when a deck starts
 # using a new package, otherwise the build fails on a missing .sty.
+#
+# Validate names against the *remote* repository, not a local installation --
+# packages get merged upstream and a name that still resolves locally can be
+# gone from tlnet (l3backend was folded into l3kernel exactly that way):
+#
+#   curl -sSL https://mirror.ctan.org/systems/texlive/tlnet/tlpkg/texlive.tlpdb.xz \
+#     | xz -dc | grep -oE '^name [a-zA-Z0-9._-]+$' | sed 's/^name //' | sort -u
 
 scheme-basic
 latexmk
@@ -61,7 +68,6 @@ kpathsea
 kvdefinekeys
 kvoptions
 kvsetkeys
-l3backend
 l3kernel
 l3packages
 latex
